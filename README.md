@@ -9,3 +9,7 @@ Using Frobenius norm we calculate the error. If the error is above a certain thr
 #Task done so far:
 1. Initializing two matrices using Gaussian distribution.
 2. Multiplying the two matrices.
+
+
+#Java Front End
+1. A program was made which executes an exe file from Java. The exe file carries out a simple matrix multiplication to find Fibonacci numbers.
