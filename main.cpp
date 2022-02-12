@@ -47,7 +47,22 @@ void print_two_matrix(double m1[][100], double m2[][100], int m, int k, int n)
     cout << endl;
 }
 
+// when we print a declared 2d array
 void print_matrix(double V[][100], int m, int n)
+{
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            cout << V[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+// When we print a dynamically allocated 2d array
+void print_matrix_using_pointer(double **V, int m, int n)
 {
     for (int i = 0; i < m; i++)
     {
@@ -59,7 +74,7 @@ void print_matrix(double V[][100], int m, int n)
     }
 }
 
-void multiply(double m1[][100], double m2[][100], int m, int k, int n)
+double **multiply(double m1[][100], double m2[][100], int m, int k, int n)
 {
     double V[100][100];
 
@@ -74,7 +89,23 @@ void multiply(double m1[][100], double m2[][100], int m, int k, int n)
             }
         }
     }
-    print_matrix(V, m, n);
+    // dynamic memory allocation to return 2d array
+    double **V_ret = new double *[m]; // m is the number of rows
+    for (int i = 0; i < m; i++)
+    {
+        V_ret[i] = new double[n]; // each row has n columns
+        for (int j = 0; j < n; j++)
+        {
+            V_ret[i][j] = V[i][j];
+        }
+    }
+
+    return V_ret;
+}
+
+void cost_function(double in[][100], double current[][100])
+{
+    int cost = 0; // epsilon
 }
 
 int main()
@@ -82,8 +113,11 @@ int main()
     int matrix[100][100] = {};
     int row, col, i, j, k;
 
+    printf("Enter number of rows and cols: ");
     // Taking input
     cin >> row >> col; // m*n matrix
+
+    printf("Enter matrix: ");
     for (i = 0; i < row; i++)
     {
         for (j = 0; j < col; j++)
@@ -91,8 +125,10 @@ int main()
     }
     // Generating two matrices using user input dimension and random number generator
     //  Dimension of broken matrix
+    printf("Enter dimension: ");
     cin >> k;
 
+    printf("Matrix broken and initialized using Gaussian dist: ");
     double m_part1[100][100] = {}, m_part2[100][100] = {}; // broken down in m*k and k*n matrix
 
     for (i = 0; i < row; i++)
@@ -110,7 +146,17 @@ int main()
             m_part2[i][j] = Rand_number(); // send to random number generator
         }
     }
+
+    printf("Print broken down matrices: ");
     print_two_matrix(m_part1, m_part2, row, k, col);
     // multiplication
-    multiply(m_part1, m_part2, row, k, col);
+
+    double **V = multiply(m_part1, m_part2, row, k, col);
+
+    printf("V= \n");
+
+    print_matrix_using_pointer(V, row, col);
+
+    // cost function
+    // cost_function(matrix, row, col, k);
 }
