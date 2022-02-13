@@ -1,22 +1,29 @@
 #include <iostream>
 #include <math.h>
 using namespace std;
-
 #define e 2.71828
-#define initial 0.398922804
+const double sigma = 5.0;
+const double Mu = 10.0;
+const double initial = 0.398922804 / sigma;
 
 double randfrom(double minn, double maxx)
 {
-    srand(100); // seed of rand
     double range = (maxx - minn);
-    double div = 32767 / range; // 32767 is the max value of rand()
-    return minn + (rand() / div);
+    double div = (double)RAND_MAX / range; // 32767 is the max value of rand()
+    return minn + ((double)rand() / div);
 }
 
 double exponential() // e^(-0.5*x^2)
 {
-    double power;
-    power = (-0.5 * pow(randfrom(-1, 1), 2)); // randfrom(0,1) is a random number between 0 and 1
+    double power, x;
+    // power = (-0.5 * pow(randfrom(-1, 1), 2)); // randfrom(-1,1) is a random number between 0 and 1
+    x = randfrom(-9.0, 10.0);
+    cout << x << endl;
+    power = ((x - sigma) / Mu); // x-sigma/Mu is the power
+    // cout << power << endl;
+    double half = -0.5;
+    power = pow((half * power), 2.0); // e^-0.5*power^2
+    // cout << power << endl;
     return pow(e, power);
 }
 
@@ -103,14 +110,28 @@ double **multiply(double m1[][100], double m2[][100], int m, int k, int n)
     return V_ret;
 }
 
-void cost_function(double in[][100], double current[][100])
+void cost_function(double initial_matrix[][100], double **current, int row, int col)
 {
-    int cost = 0; // epsilon
+    double cost = 0.0; // epsilon
+    double sum = 0.0;
+
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            // square of the difference between initial and final for each index
+            sum += pow((initial_matrix[i][j] - current[i][j]), 2);
+        }
+    }
+    // root of the sum of squares epsilon
+    cost = sqrt(sum);
+
+    cout << cost << endl;
 }
 
 int main()
 {
-    int matrix[100][100] = {};
+    double matrix[100][100] = {};
     int row, col, i, j, k;
 
     printf("Enter number of rows and cols: ");
@@ -147,7 +168,7 @@ int main()
         }
     }
 
-    printf("Print broken down matrices: ");
+    printf("Print broken down matrices:\n");
     print_two_matrix(m_part1, m_part2, row, k, col);
     // multiplication
 
@@ -158,5 +179,5 @@ int main()
     print_matrix_using_pointer(V, row, col);
 
     // cost function
-    // cost_function(matrix, row, col, k);
+    cost_function(matrix, V, row, col);
 }
