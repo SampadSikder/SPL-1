@@ -9,6 +9,8 @@ Using Frobenius norm we calculate the error. If the error is above a certain thr
 #Task done so far:
 1. Initializing two matrices using Gaussian distribution.
 2. Multiplying the two matrices.
+3. Added a cost function
+4. Changed the rng from standard normal to normal distribution with specific sigma and mu values
 
 
 
