@@ -18,7 +18,7 @@ double exponential() // e^(-0.5*x^2)
     double power, x;
     // power = (-0.5 * pow(randfrom(-1, 1), 2)); // randfrom(-1,1) is a random number between 0 and 1
     x = randfrom(-9.0, 10.0);
-    cout << x << endl;
+    // cout << x << endl;
     power = ((x - sigma) / Mu); // x-sigma/Mu is the power
     // cout << power << endl;
     double half = -0.5;
@@ -69,7 +69,7 @@ void print_matrix(double V[][100], int m, int n)
 }
 
 // When we print a dynamically allocated 2d array
-void print_matrix_using_pointer(double **V, int m, int n)
+/*void print_matrix_using_pointer(double V[][100], int m, int n)
 {
     for (int i = 0; i < m; i++)
     {
@@ -79,11 +79,11 @@ void print_matrix_using_pointer(double **V, int m, int n)
         }
         cout << endl;
     }
-}
+}*/
 
-double **multiply(double m1[][100], double m2[][100], int m, int k, int n)
+void multiply(double V[][100], double m1[][100], double m2[][100], int m, int k, int n)
 {
-    double V[100][100];
+    // double V[100][100];
 
     for (int i = 0; i < m; i++)
     {
@@ -96,21 +96,9 @@ double **multiply(double m1[][100], double m2[][100], int m, int k, int n)
             }
         }
     }
-    // dynamic memory allocation to return 2d array
-    double **V_ret = new double *[m]; // m is the number of rows
-    for (int i = 0; i < m; i++)
-    {
-        V_ret[i] = new double[n]; // each row has n columns
-        for (int j = 0; j < n; j++)
-        {
-            V_ret[i][j] = V[i][j];
-        }
-    }
-
-    return V_ret;
 }
 
-void cost_function(double initial_matrix[][100], double **current, int row, int col)
+double cost_function(double initial_matrix[][100], double current[][100], int row, int col)
 {
     double cost = 0.0; // epsilon
     double sum = 0.0;
@@ -126,7 +114,27 @@ void cost_function(double initial_matrix[][100], double **current, int row, int 
     // root of the sum of squares epsilon
     cost = sqrt(sum);
 
-    cout << cost << endl;
+    cout << "Cost is :" << cost << endl;
+
+    return cost;
+}
+void transpose(double W[][100], double transpose_matrix[][100], int row, int col)
+{
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            transpose_matrix[j][i] = W[i][j];
+        }
+    }
+    print_matrix(transpose_matrix, col, row);
+}
+
+void update_H(double H[][100], double W[][100], double V[][100], int row, int k, int col)
+{
+    double transpose_matrix[100][100] = {0};
+
+    transpose(W, transpose_matrix, k, col);
 }
 
 int main()
@@ -171,13 +179,25 @@ int main()
     printf("Print broken down matrices:\n");
     print_two_matrix(m_part1, m_part2, row, k, col);
     // multiplication
-
-    double **V = multiply(m_part1, m_part2, row, k, col);
+    double V[100][100] = {0};
+    multiply(V, m_part1, m_part2, row, k, col);
 
     printf("V= \n");
 
-    print_matrix_using_pointer(V, row, col);
+    print_matrix(V, row, col);
 
+    // print_matrix_using_pointer(V, row, col);
+    // counting number of iterations
+    int counter = 0;
     // cost function
-    cost_function(matrix, V, row, col);
+    double cost = cost_function(V, matrix, row, col);
+    while (cost_function(V, matrix, row, col) > 0.05)
+    {
+        if (counter % 2 == 0)
+        {
+            counter++;
+            update_H(m_part1, m_part2, V, row, k, col);
+            break;
+        }
+    }
 }
