@@ -1,10 +1,12 @@
 #include <iostream>
+#include <bits/stdc++.h>
 #include <math.h>
 using namespace std;
 #define e 2.71828
 const double sigma = 5.0;
 const double Mu = 10.0;
 const double initial = 0.398922804 / sigma;
+const int N = 200;
 
 double randfrom(double minn, double maxx)
 {
@@ -32,7 +34,7 @@ double Rand_number()
     return initial * exponential(); // initial = 1/root(2pi), exponantial = e^(-0.5*x^2)
 }
 
-void print_two_matrix(double m1[][100], double m2[][100], int m, int k, int n)
+void print_two_matrix(double m1[][N], double m2[][N], int m, int k, int n)
 {
     for (int i = 0; i < m; i++)
     {
@@ -55,7 +57,7 @@ void print_two_matrix(double m1[][100], double m2[][100], int m, int k, int n)
 }
 
 // when we print a declared 2d array
-void print_matrix(double V[][100], int m, int n)
+void print_matrix(double V[][N], int m, int n)
 {
     for (int i = 0; i < m; i++)
     {
@@ -69,7 +71,7 @@ void print_matrix(double V[][100], int m, int n)
 }
 
 // When we print a dynamically allocated 2d array
-/*void print_matrix_using_pointer(double V[][100], int m, int n)
+/*void print_matrix_using_pointer(double V[][N], int m, int n)
 {
     for (int i = 0; i < m; i++)
     {
@@ -81,9 +83,40 @@ void print_matrix(double V[][100], int m, int n)
     }
 }*/
 
-void multiply(double V[][100], double m1[][100], double m2[][100], int m, int k, int n)
+void normalize(double matrix[][N], int row, int col)
 {
-    // double V[100][100];
+    double avg, sd, var = 0, sum = 0;
+
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            sum += matrix[i][j];
+        }
+    }
+    avg = sum / (row * col);
+
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            var += pow((matrix[i][j] - avg), 2);
+        }
+    }
+    sd = sqrt(var);
+
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            matrix[i][j] = matrix[i][j] / sd;
+        }
+    }
+}
+
+void multiply(double V[][N], double m1[][N], double m2[][N], int m, int k, int n)
+{
+    // double V[N][N];
 
     for (int i = 0; i < m; i++)
     {
@@ -98,7 +131,7 @@ void multiply(double V[][100], double m1[][100], double m2[][100], int m, int k,
     }
 }
 
-double cost_function(double initial_matrix[][100], double current[][100], int row, int col)
+double cost_function(double initial_matrix[][N], double current[][N], int row, int col)
 {
     double cost = 0.0; // epsilon
     double sum = 0.0;
@@ -118,7 +151,7 @@ double cost_function(double initial_matrix[][100], double current[][100], int ro
 
     return cost;
 }
-void transpose(double W[][100], double transpose_matrix[][100], int row, int col)
+void transpose(double W[][N], double transpose_matrix[][N], int row, int col)
 {
     for (int i = 0; i < row; i++)
     {
@@ -130,16 +163,79 @@ void transpose(double W[][100], double transpose_matrix[][100], int row, int col
     print_matrix(transpose_matrix, col, row);
 }
 
-void update_H(double H[][100], double W[][100], double V[][100], int row, int k, int col)
+/*void cofactor_matrix(double matrix[][N], double sub_matrix[][N], int row, int col, int n)
+{ // je row ar je col bad dibo
+    int i = 0, j = 0;
+
+    for (int r = 0; r < n; r++)
+    {
+        for (int c = 0; c < n; c++)
+        {
+            if (r != row || q != col)
+            {
+                sub_matrix[i][j] = matrix[r][c];
+                j++;
+                if (j == n - 1)
+                {
+                    j = 0;
+                    i++;
+                }
+            }
+        }
+    }
+}*/
+
+/*double det_calculator(double D[][N], int r)
 {
-    double transpose_matrix[100][100] = {0};
+    if (r == 1)
+    {
+        return D[0][0];
+    }
+    if (r == 2)
+    {
+        return (D[0][0] * D[1][1]) - (D[0][1] * D[1][0]);
+    }
+    int sub_matrix[N][N] = {0};
+    double det = 0;
+    double sign = 1;
+    for (int i = 0; i < r; i++)
+    {
+        cofactor_matrix(D, sub_matrix, 0, i, r);
+        det += sign * D[0][i] * det_calculator(sub_matrix, r - 1);
+        sign = -sign;
+    }
+}*/
+/*void inverse_function(double matrix[][N],double inverse_matrix[][N],int row, int col){
+    double A_transpose_A[N][N]={0}, transpose_A[N][N]={0};
+
+    transpose(matrix, transpose_A, row, col);//transpose_A te ashtese transpose matrix
+
+    multiply(A_transpose_A, matrix, transpose_A, row, col, row);//matrix ke gun dilam transpose_A diye ar value stored at A_transpose_A
+
+    double det_A=0;
+
+    double D[][N]={0};
+
+    det_calculator(A_transpose_A,row);
+
+
+
+
+
+}*/
+
+/*void update_H(double H[][N], double W[][N], double V[][N], int row, int k, int col)
+{
+    double transpose_matrix[N][N] = {0},inverse_matrix[N][N] = {0};
 
     transpose(W, transpose_matrix, k, col);
-}
+
+    inverse_function(W,inverse_matrix,row,col);
+}*/
 
 int main()
 {
-    double matrix[100][100] = {};
+    double matrix[N][N] = {};
     int row, col, i, j, k;
 
     printf("Enter number of rows and cols: ");
@@ -152,13 +248,18 @@ int main()
         for (j = 0; j < col; j++)
             cin >> matrix[i][j];
     }
+    cout << "After normalization" << endl;
+
+    normalize(matrix, row, col);
+
+    print_matrix(matrix, row, col);
     // Generating two matrices using user input dimension and random number generator
     //  Dimension of broken matrix
     printf("Enter dimension: ");
     cin >> k;
 
     printf("Matrix broken and initialized using Gaussian dist: ");
-    double m_part1[100][100] = {}, m_part2[100][100] = {}; // broken down in m*k and k*n matrix
+    double m_part1[N][N] = {}, m_part2[N][N] = {}; // broken down in m*k and k*n matrix
 
     for (i = 0; i < row; i++)
     {
@@ -179,7 +280,7 @@ int main()
     printf("Print broken down matrices:\n");
     print_two_matrix(m_part1, m_part2, row, k, col);
     // multiplication
-    double V[100][100] = {0};
+    double V[N][N] = {0};
     multiply(V, m_part1, m_part2, row, k, col);
 
     printf("V= \n");
@@ -191,7 +292,8 @@ int main()
     int counter = 0;
     // cost function
     double cost = cost_function(V, matrix, row, col);
-    while (cost_function(V, matrix, row, col) > 0.05)
+    // update_H(m_part1, m_part2, V, row, k, col);
+    /*while (cost_function(V, matrix, row, col) > 0.05)
     {
         if (counter % 2 == 0)
         {
@@ -199,5 +301,5 @@ int main()
             update_H(m_part1, m_part2, V, row, k, col);
             break;
         }
-    }
+    }*/
 }
