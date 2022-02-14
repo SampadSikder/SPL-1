@@ -85,7 +85,7 @@ void print_matrix(double V[][N], int m, int n)
 
 void normalize(double matrix[][N], int row, int col)
 {
-    double avg, sd, var = 0, sum = 0;
+    double avg, sd, var = 0.0, sum = 0.0;
 
     for (int i = 0; i < row; i++)
     {
@@ -103,7 +103,9 @@ void normalize(double matrix[][N], int row, int col)
             var += pow((matrix[i][j] - avg), 2);
         }
     }
-    sd = sqrt(var);
+    sd = sqrt(var / (row * col));
+
+    cout << "SD: " << sd << endl;
 
     for (int i = 0; i < row; i++)
     {
