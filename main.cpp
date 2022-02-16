@@ -1,12 +1,13 @@
 #include <iostream>
 #include <bits/stdc++.h>
 #include <math.h>
+#include "print_matrix.h"
+#include "matrix_operations.h"
 using namespace std;
 #define e 2.71828
 const double sigma = 5.0;
 const double Mu = 10.0;
 const double initial = 0.398922804 / sigma;
-const int N = 200;
 
 double randfrom(double minn, double maxx)
 {
@@ -34,105 +35,6 @@ double Rand_number()
     return initial * exponential(); // initial = 1/root(2pi), exponantial = e^(-0.5*x^2)
 }
 
-void print_two_matrix(double m1[][N], double m2[][N], int m, int k, int n)
-{
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < k; j++)
-        {
-            cout << m1[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-    for (int i = 0; i < k; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            cout << m2[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-// when we print a declared 2d array
-void print_matrix(double V[][N], int m, int n)
-{
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            cout << V[i][j] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
-
-// When we print a dynamically allocated 2d array
-/*void print_matrix_using_pointer(double V[][N], int m, int n)
-{
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            cout << V[i][j] << " ";
-        }
-        cout << endl;
-    }
-}*/
-
-void normalize(double matrix[][N], int row, int col)
-{
-    double avg, sd, var = 0.0, sum = 0.0;
-
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < col; j++)
-        {
-            sum += matrix[i][j];
-        }
-    }
-    avg = sum / (row * col);
-
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < col; j++)
-        {
-            var += pow((matrix[i][j] - avg), 2);
-        }
-    }
-    sd = sqrt(var / (row * col));
-
-    cout << "SD: " << sd << endl;
-
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < col; j++)
-        {
-            matrix[i][j] = matrix[i][j] / sd;
-        }
-    }
-}
-
-void multiply(double V[][N], double m1[][N], double m2[][N], int m, int k, int n)
-{
-    // double V[N][N];
-
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            V[i][j] = 0;
-            for (int x = 0; x < k; x++)
-            {
-                V[i][j] += m1[i][x] * m2[x][j];
-            }
-        }
-    }
-}
-
 double cost_function(double initial_matrix[][N], double current[][N], int row, int col)
 {
     double cost = 0.0; // epsilon
@@ -153,90 +55,60 @@ double cost_function(double initial_matrix[][N], double current[][N], int row, i
 
     return cost;
 }
-void transpose(double W[][N], double transpose_matrix[][N], int row, int col)
+
+void update_H(double W[][N], double H[][N], double V[][N], int row, int k, int col)
 {
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < col; j++)
-        {
-            transpose_matrix[j][i] = W[i][j];
-        }
-    }
-    print_matrix(transpose_matrix, col, row);
+
+    /*double transpose_W[N][N] = {0}, inverse_matrix[N][N] = {0};
+    copy_matrix(W, transpose_W, row, col);
+    inverse_function(W, inverse_matrix, row, k);
+    cout << "outside inverse function" << endl;
+    print_matrix(inverse_matrix, k, row);*/
+
+    double transpose_W[N][N] = {0}, numerator[N][N];
+
+    // print_matrix(W, row, k); // W is of index row*k
+
+    transpose(W, transpose_W, row, k); // WT
+
+    // print_matrix(transpose_W, k, row);
+
+    multiply(numerator, transpose_W, V, k, row, col); // WT*V
+
+    // print_matrix(numerator, k, col);
+
+    double den_part1[N][N] = {}, denominator[N][N] = {};
+
+    multiply(den_part1, transpose_W, W, k, row, k); // WT*W
+
+    // print_matrix(den_part1, k, k);
+
+    multiply(denominator, den_part1, H, k, k, col); //(WT*W)*H
+
+    print_matrix(denominator, k, col);
+
+    double den_inverse[N][N] = {};
+
+    inverse_function(denominator, den_inverse, k, col); //((WT*W)*H)^-1
+
+    print_matrix(den_inverse, col, k);
+
+    double updated_H[N][N] = {}; // the term that is to be multiplied with H
+
+    multiply(updated_H, numerator, den_inverse, k, col, k); //(WT*V)*((WT*W)*H)^-1
+
+    print_matrix(updated_H, k, k);
+
+    double ans_H[N][N];
+
+    multiply(ans_H, updated_H, H, k, k, col);
+
+    copy_matrix(ans_H, H, k, col);
 }
-
-/*void cofactor_matrix(double matrix[][N], double sub_matrix[][N], int row, int col, int n)
-{ // je row ar je col bad dibo
-    int i = 0, j = 0;
-
-    for (int r = 0; r < n; r++)
-    {
-        for (int c = 0; c < n; c++)
-        {
-            if (r != row || q != col)
-            {
-                sub_matrix[i][j] = matrix[r][c];
-                j++;
-                if (j == n - 1)
-                {
-                    j = 0;
-                    i++;
-                }
-            }
-        }
-    }
-}*/
-
-/*double det_calculator(double D[][N], int r)
-{
-    if (r == 1)
-    {
-        return D[0][0];
-    }
-    if (r == 2)
-    {
-        return (D[0][0] * D[1][1]) - (D[0][1] * D[1][0]);
-    }
-    int sub_matrix[N][N] = {0};
-    double det = 0;
-    double sign = 1;
-    for (int i = 0; i < r; i++)
-    {
-        cofactor_matrix(D, sub_matrix, 0, i, r);
-        det += sign * D[0][i] * det_calculator(sub_matrix, r - 1);
-        sign = -sign;
-    }
-}*/
-/*void inverse_function(double matrix[][N],double inverse_matrix[][N],int row, int col){
-    double A_transpose_A[N][N]={0}, transpose_A[N][N]={0};
-
-    transpose(matrix, transpose_A, row, col);//transpose_A te ashtese transpose matrix
-
-    multiply(A_transpose_A, matrix, transpose_A, row, col, row);//matrix ke gun dilam transpose_A diye ar value stored at A_transpose_A
-
-    double det_A=0;
-
-    double D[][N]={0};
-
-    det_calculator(A_transpose_A,row);
-
-
-
-
-
-}*/
-
-/*void update_H(double H[][N], double W[][N], double V[][N], int row, int k, int col)
-{
-    double transpose_matrix[N][N] = {0},inverse_matrix[N][N] = {0};
-
-    transpose(W, transpose_matrix, k, col);
-
-    inverse_function(W,inverse_matrix,row,col);
-}*/
 
 int main()
 {
+    freopen("in.txt", "r", stdin);
     double matrix[N][N] = {};
     int row, col, i, j, k;
 
@@ -294,7 +166,7 @@ int main()
     int counter = 0;
     // cost function
     double cost = cost_function(V, matrix, row, col);
-    // update_H(m_part1, m_part2, V, row, k, col);
+    update_H(m_part1, m_part2, matrix, row, k, col); // mpart1=W mpart2=H
     /*while (cost_function(V, matrix, row, col) > 0.05)
     {
         if (counter % 2 == 0)
@@ -304,4 +176,11 @@ int main()
             break;
         }
     }*/
+    cout << "New H:" << endl;
+
+    print_matrix(m_part2, k, col);
+
+    multiply(V, m_part1, m_part2, row, k, col);
+
+    cost = cost_function(V, matrix, row, col);
 }
