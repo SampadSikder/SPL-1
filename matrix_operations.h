@@ -1,6 +1,8 @@
 #pragma once
 const int N = 100;
 void multiply(double V[][N], double m1[][N], double m2[][N], int m, int k, int n);
+void divide_element_wise(double V[][N], double m1[][N], double m2[][N], int m, int n);
+void multiply_element_wise(double V[][N], double m1[][N], double m2[][N], int m, int n);
 void copy_matrix(double from[][N], double to[][N], int row, int col);
 void transpose(double input_matrix[][N], double transpose_matrix[][N], int row, int col);
 void normalize(double matrix[][N], int row, int col);

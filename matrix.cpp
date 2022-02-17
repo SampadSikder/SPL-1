@@ -19,6 +19,40 @@ void multiply(double V[][N], double m1[][N], double m2[][N], int m, int k, int n
         }
     }
 }
+void multiply_element_wise(double V[][N], double m1[][N], double m2[][N], int m, int n)
+{
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            V[i][j] = m1[i][j] * m2[i][j];
+        }
+    }
+}
+void divide_element_wise(double V[][N], double m1[][N], double m2[][N], int m, int n) // divide element wise
+{
+    // double V[N][N];
+
+    /*for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            V[i][j] = 0;
+            for (int x = 0; x < k; x++)
+            {
+                V[i][j] = m1[i][x] / m2[x][j];
+            }
+        }
+    }*/
+
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            V[i][j] = m1[i][j] / m2[i][j];
+        }
+    }
+}
 void copy_matrix(double from[][N], double to[][N], int row, int col)
 {
     for (int i = 0; i < row; i++)

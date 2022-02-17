@@ -85,25 +85,51 @@ void update_H(double W[][N], double H[][N], double V[][N], int row, int k, int c
 
     multiply(denominator, den_part1, H, k, k, col); //(WT*W)*H
 
-    print_matrix(denominator, k, col);
+    // print_matrix(denominator, k, col);
 
-    double den_inverse[N][N] = {};
+    // double den_inverse[N][N] = {};
 
-    inverse_function(denominator, den_inverse, k, col); //((WT*W)*H)^-1
+    // inverse_function(denominator, den_inverse, k, col); //((WT*W)*H)^-1
 
-    print_matrix(den_inverse, col, k);
+    // print_matrix(den_inverse, col, k);
 
     double updated_H[N][N] = {}; // the term that is to be multiplied with H
 
-    multiply(updated_H, numerator, den_inverse, k, col, k); //(WT*V)*((WT*W)*H)^-1
+    // transpose(denominator, den_inverse, k, col);
 
-    print_matrix(updated_H, k, k);
+    divide_element_wise(updated_H, numerator, denominator, k, col);
+
+    // print_matrix(denominator, k, k);
+
+    /*multiply(updated_H, numerator, den_inverse, k, col, k); //(WT*V)*((WT*W)*H)^-1
+
+    print_matrix(updated_H, k, k);*/
 
     double ans_H[N][N];
 
-    multiply(ans_H, updated_H, H, k, k, col);
+    // multiply(ans_H, updated_H, H, k, k, col);
+    multiply_element_wise(ans_H, H, updated_H, k, col);
 
-    copy_matrix(ans_H, H, k, col);
+    copy_matrix(updated_H, H, k, col);
+}
+void update_W(double W[][N], double H[][N], double V[][N], int row, int k, int col)
+{
+    double HT[N][N] = {};
+    transpose(H, HT, k, col); // HT
+    double numerator[N][N] = {};
+    multiply(numerator, V, HT, row, col, k); // V*HT
+    // print_matrix(numerator, row, k);
+
+    double HHT[N][N] = {};
+    multiply(HHT, H, HT, k, col, k); // HT*H
+    double denominator[N][N] = {};
+    multiply(denominator, W, HHT, row, k, k);
+
+    double updated_W[N][N] = {};
+    divide_element_wise(updated_W, numerator, denominator, row, k);
+    double ans_W[N][N] = {};
+    multiply_element_wise(ans_W, W, updated_W, row, k);
+    copy_matrix(ans_W, W, row, k);
 }
 
 int main()
@@ -163,24 +189,28 @@ int main()
 
     // print_matrix_using_pointer(V, row, col);
     // counting number of iterations
-    int counter = 0;
+    int counter = 1;
     // cost function
     double cost = cost_function(V, matrix, row, col);
-    update_H(m_part1, m_part2, matrix, row, k, col); // mpart1=W mpart2=H
-    /*while (cost_function(V, matrix, row, col) > 0.05)
+    // update_H(m_part1, m_part2, matrix, row, k, col); // mpart1=W mpart2=H
+    // update_W(m_part1, m_part2, matrix, row, k, col);
+    while (cost_function(V, matrix, row, col) > 0.05)
     {
-        if (counter % 2 == 0)
+        if (counter % 2 == 1)
         {
-            counter++;
-            update_H(m_part1, m_part2, V, row, k, col);
+            update_H(m_part1, m_part2, matrix, row, k, col);
+            cout
+                << "New H:" << endl;
+            print_matrix(m_part2, k, col);
+        }
+        else
+        {
+            update_W(m_part1, m_part2, matrix, row, k, col);
+            cout << "New W: " << endl;
+            print_matrix(m_part1, row, k);
             break;
         }
-    }*/
-    cout << "New H:" << endl;
-
-    print_matrix(m_part2, k, col);
-
-    multiply(V, m_part1, m_part2, row, k, col);
-
-    cost = cost_function(V, matrix, row, col);
+        counter++;
+        multiply(V, m_part1, m_part2, row, k, col);
+    }
 }
