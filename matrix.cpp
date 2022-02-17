@@ -6,6 +6,13 @@ using namespace std;
 void multiply(double V[][N], double m1[][N], double m2[][N], int m, int k, int n)
 {
     // double V[N][N];
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            V[i][j] = 0;
+        }
+    }
 
     for (int i = 0; i < m; i++)
     {

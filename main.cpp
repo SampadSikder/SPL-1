@@ -116,9 +116,9 @@ void update_W(double W[][N], double H[][N], double V[][N], int row, int k, int c
 {
     double HT[N][N] = {};
     transpose(H, HT, k, col); // HT
+    print_matrix(HT, col, k);
     double numerator[N][N] = {};
     multiply(numerator, V, HT, row, col, k); // V*HT
-    // print_matrix(numerator, row, k);
 
     double HHT[N][N] = {};
     multiply(HHT, H, HT, k, col, k); // HT*H
@@ -187,13 +187,10 @@ int main()
 
     print_matrix(V, row, col);
 
-    // print_matrix_using_pointer(V, row, col);
-    // counting number of iterations
     int counter = 1;
     // cost function
     double cost = cost_function(V, matrix, row, col);
-    // update_H(m_part1, m_part2, matrix, row, k, col); // mpart1=W mpart2=H
-    // update_W(m_part1, m_part2, matrix, row, k, col);
+
     while (cost_function(V, matrix, row, col) > 0.05)
     {
         if (counter % 2 == 1)
@@ -208,7 +205,6 @@ int main()
             update_W(m_part1, m_part2, matrix, row, k, col);
             cout << "New W: " << endl;
             print_matrix(m_part1, row, k);
-            break;
         }
         counter++;
         multiply(V, m_part1, m_part2, row, k, col);
