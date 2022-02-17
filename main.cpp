@@ -20,7 +20,7 @@ double exponential() // e^(-0.5*x^2)
 {
     double power, x;
     // power = (-0.5 * pow(randfrom(-1, 1), 2)); // randfrom(-1,1) is a random number between 0 and 1
-    x = randfrom(-9.0, 10.0);
+    x = randfrom(-8.0, 9.0);
     // cout << x << endl;
     power = ((x - sigma) / Mu); // x-sigma/Mu is the power
     // cout << power << endl;
@@ -65,7 +65,7 @@ void update_H(double W[][N], double H[][N], double V[][N], int row, int k, int c
     cout << "outside inverse function" << endl;
     print_matrix(inverse_matrix, k, row);*/
 
-    double transpose_W[N][N] = {0}, numerator[N][N];
+    double transpose_W[N][N] = {0}, numerator[N][N] = {0};
 
     // print_matrix(W, row, k); // W is of index row*k
 
@@ -77,7 +77,7 @@ void update_H(double W[][N], double H[][N], double V[][N], int row, int k, int c
 
     // print_matrix(numerator, k, col);
 
-    double den_part1[N][N] = {}, denominator[N][N] = {};
+    double den_part1[N][N] = {0}, denominator[N][N] = {0};
 
     multiply(den_part1, transpose_W, W, k, row, k); // WT*W
 
@@ -93,7 +93,7 @@ void update_H(double W[][N], double H[][N], double V[][N], int row, int k, int c
 
     // print_matrix(den_inverse, col, k);
 
-    double updated_H[N][N] = {}; // the term that is to be multiplied with H
+    double updated_H[N][N] = {0}; // the term that is to be multiplied with H
 
     // transpose(denominator, den_inverse, k, col);
 
@@ -105,7 +105,7 @@ void update_H(double W[][N], double H[][N], double V[][N], int row, int k, int c
 
     print_matrix(updated_H, k, k);*/
 
-    double ans_H[N][N];
+    double ans_H[N][N] = {0};
 
     // multiply(ans_H, updated_H, H, k, k, col);
     multiply_element_wise(ans_H, H, updated_H, k, col);
@@ -114,21 +114,23 @@ void update_H(double W[][N], double H[][N], double V[][N], int row, int k, int c
 }
 void update_W(double W[][N], double H[][N], double V[][N], int row, int k, int col)
 {
-    double HT[N][N] = {};
+    double HT[N][N] = {0};
     transpose(H, HT, k, col); // HT
-    print_matrix(HT, col, k);
-    double numerator[N][N] = {};
+    // print_matrix(HT, col, k);
+    double numerator[N][N] = {0};
     multiply(numerator, V, HT, row, col, k); // V*HT
+    // print_matrix(numerator, row, k);
 
-    double HHT[N][N] = {};
+    double HHT[N][N] = {0};
     multiply(HHT, H, HT, k, col, k); // HT*H
-    double denominator[N][N] = {};
+    double denominator[N][N] = {0};
     multiply(denominator, W, HHT, row, k, k);
-
-    double updated_W[N][N] = {};
+    // print_matrix(denominator, row, k);
+    double updated_W[N][N] = {0};
     divide_element_wise(updated_W, numerator, denominator, row, k);
-    double ans_W[N][N] = {};
+    double ans_W[N][N] = {0};
     multiply_element_wise(ans_W, W, updated_W, row, k);
+
     copy_matrix(ans_W, W, row, k);
 }
 
@@ -185,7 +187,7 @@ int main()
 
     printf("V= \n");
 
-    print_matrix(V, row, col);
+    // print_matrix(V, row, col);
 
     int counter = 1;
     // cost function
@@ -207,6 +209,10 @@ int main()
             print_matrix(m_part1, row, k);
         }
         counter++;
+        if (counter == 10)
+        {
+            break;
+        }
         multiply(V, m_part1, m_part2, row, k, col);
     }
 }
