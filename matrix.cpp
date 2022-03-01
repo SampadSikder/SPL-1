@@ -5,15 +5,6 @@ using namespace std;
 
 void multiply(double V[][N], double m1[][N], double m2[][N], int m, int k, int n)
 {
-    // double V[N][N];
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            V[i][j] = 0;
-        }
-    }
-
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
@@ -38,20 +29,6 @@ void multiply_element_wise(double V[][N], double m1[][N], double m2[][N], int m,
 }
 void divide_element_wise(double V[][N], double m1[][N], double m2[][N], int m, int n) // divide element wise
 {
-    // double V[N][N];
-
-    /*for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            V[i][j] = 0;
-            for (int x = 0; x < k; x++)
-            {
-                V[i][j] = m1[i][x] / m2[x][j];
-            }
-        }
-    }*/
-
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
@@ -110,7 +87,7 @@ void normalize(double matrix[][N], int row, int col)
     }
     sd = sqrt(var / (row * col));
 
-    cout << "SD: " << sd << endl;
+    // cout << "SD: " << sd << endl;
 
     for (int i = 0; i < row; i++)
     {
