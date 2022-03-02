@@ -60,66 +60,51 @@ void update_H(double W[][N], double H[][N], double V[][N], int row, int k, int c
 {
     double transpose_W[N][N], numerator[N][N];
 
-    // print_matrix(W, row, k); // W is of index row*k
-
     transpose(W, transpose_W, row, k); // WT
 
-    // print_matrix(transpose_W, k, row);
-
     multiply(numerator, transpose_W, V, k, row, col); // WT*V
-
-    // print_matrix(numerator, k, col);
 
     double den_part1[N][N], denominator[N][N];
 
     multiply(den_part1, transpose_W, W, k, row, k); // WT*W
 
-    // print_matrix(den_part1, k, k);
-
     multiply(denominator, den_part1, H, k, k, col); //(WT*W)*H
 
     double updated_H[N][N]; // the term that is to be multiplied with H
 
-    // transpose(denominator, den_inverse, k, col);
-
     divide_element_wise(updated_H, numerator, denominator, k, col);
-
-    // print_matrix(updated_H, k, k);
 
     double ans_H[N][N];
 
-    // multiply(ans_H, updated_H, H, k, k, col);
     multiply_element_wise(ans_H, H, updated_H, k, col);
 
     copy_matrix(ans_H, H, k, col);
-
-    // printf("UPDATED H in function=\n ");
-    // print_matrix(H, k, col);
 }
 void update_W(double W[][N], double H[][N], double V[][N], int row, int k, int col)
 {
     double HT[N][N], numerator[N][N];
 
     transpose(H, HT, k, col); // HT
-    // print_matrix(HT, col, k);
 
     multiply(numerator, V, HT, row, col, k); // V*HT
-    // print_matrix(numerator, row, k);
 
     double HHT[N][N];
+
     multiply(HHT, H, HT, k, col, k); // HT*H
+
     double denominator[N][N];
+
     multiply(denominator, W, HHT, row, k, k);
-    // print_matrix(denominator, row, k);
+
     double updated_W[N][N];
+
     divide_element_wise(updated_W, numerator, denominator, row, k);
+
     double ans_W[N][N];
+
     multiply_element_wise(ans_W, W, updated_W, row, k);
 
     copy_matrix(ans_W, W, row, k);
-
-    // printf("UPDATED W in function=\n ");
-    // print_matrix(W, row, k);
 }
 
 int main()
@@ -178,6 +163,7 @@ int main()
     // print_matrix(V, row, col);
 
     int counter = 1;
+    printf("Initial cost: ");
     // cost function
     double cost = cost_function(matrix, V, row, col);
 

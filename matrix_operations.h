@@ -1,5 +1,5 @@
 #pragma once
-const int N = 100;
+const int N = 150;
 void multiply(double V[][N], double m1[][N], double m2[][N], int m, int k, int n);
 void divide_element_wise(double V[][N], double m1[][N], double m2[][N], int m, int n);
 void multiply_element_wise(double V[][N], double m1[][N], double m2[][N], int m, int n);
