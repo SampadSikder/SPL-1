@@ -9,7 +9,7 @@ const double sigma = 5.0;
 const double Mu = 10.0;
 const double initial = 0.398922804 / sigma;
 
-double randfrom(double minn, double maxx)
+double rand(double minn, double maxx)
 {
     double range = (maxx - minn);
     double div = (double)RAND_MAX / range; // 32767 is the max value of rand()
@@ -20,7 +20,7 @@ double exponential() // e^(-0.5*x^2)
 {
     double power, x;
     // power = (-0.5 * pow(randfrom(-1, 1), 2)); // randfrom(-1,1) is a random number between 0 and 1
-    x = randfrom(-8.0, 9.0);
+    x = rand(-8.0, 10.0); // random number generator within -10.0 to 10.0
     // cout << x << endl;
     power = ((x - sigma) / Mu); // x-sigma/Mu is the power
     // cout << power << endl;
@@ -109,7 +109,7 @@ void update_W(double W[][N], double H[][N], double V[][N], int row, int k, int c
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
+    freopen("in2.txt", "r", stdin);
     double matrix[N][N] = {};
     int row, col, i, j, k;
 
@@ -134,13 +134,13 @@ int main()
     cin >> k;
 
     printf("Matrix broken and initialized using Gaussian dist: ");
-    double m_part1[N][N] = {}, m_part2[N][N] = {}; // broken down in m*k and k*n matrix
+    double W[N][N] = {}, H[N][N] = {}; // broken down in m*k and k*n matrix
 
     for (i = 0; i < row; i++)
     {
         for (j = 0; j < k; j++)
         {
-            m_part1[i][j] = Rand_number(); // send to random number generator
+            W[i][j] = Rand_number(); // send to random number generator
         }
     }
 
@@ -148,15 +148,15 @@ int main()
     {
         for (j = 0; j < col; j++)
         {
-            m_part2[i][j] = Rand_number(); // send to random number generator
+            H[i][j] = Rand_number(); // send to random number generator
         }
     }
 
     printf("Print broken down matrices:\n");
-    print_two_matrix(m_part1, m_part2, row, k, col);
+    print_two_matrix(W, H, row, k, col);
     // multiplication
     double V[N][N] = {0};
-    multiply(V, m_part1, m_part2, row, k, col);
+    multiply(V, W, H, row, k, col);
 
     printf("V= \n");
 
@@ -169,22 +169,24 @@ int main()
 
     while (cost > 0.05)
     {
-        if ((counter % 2) == 1)
+
+        if ((counter % 2) == 0)
         {
-            update_H(m_part1, m_part2, matrix, row, k, col);
+            update_H(W, H, matrix, row, k, col);
             cout << "New H:" << endl;
-            print_matrix(m_part2, k, col);
+            print_matrix(H, k, col);
         }
         else
         {
-            update_W(m_part1, m_part2, matrix, row, k, col);
+            update_W(W, H, matrix, row, k, col);
             cout << "New W: " << endl;
-            print_matrix(m_part1, row, k);
+            print_matrix(W, row, k);
         }
-
         counter++;
-        multiply(V, m_part1, m_part2, row, k, col);
+        multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
     }
-    printf("Total number of iterations before arriving at result: %d", counter);
+    printf("Total number of iterations before arriving at result: %d\n", counter);
+    printf("Final result: ");
+    print_two_matrix(W, H, row, k, col);
 }

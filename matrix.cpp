@@ -37,6 +37,7 @@ void divide_element_wise(double V[][N], double m1[][N], double m2[][N], int m, i
         }
     }
 }
+
 void copy_matrix(double from[][N], double to[][N], int row, int col)
 {
     for (int i = 0; i < row; i++)
@@ -85,7 +86,8 @@ void normalize(double matrix[][N], int row, int col)
             var += pow((matrix[i][j] - avg), 2);
         }
     }
-    sd = sqrt(var / (row * col));
+    var = var / ((row * col) - 1);
+    sd = sqrt(var);
 
     // cout << "SD: " << sd << endl;
 
