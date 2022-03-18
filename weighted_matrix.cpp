@@ -8,11 +8,14 @@ using namespace std;
 
 int main()
 {
-    double matrix[N][N];
+    double *matrix[N];
     int row, col;
 
     cout << "Enter number of rows and columns" << endl;
     cin >> row >> col;
+
+    for (int i = 0; i < row; i++)
+        matrix[i] = (double *)malloc(col * sizeof(double));
 
     cout << "Enter the matrix" << endl;
 
@@ -23,7 +26,10 @@ int main()
             cin >> matrix[i][j];
         }
     }
-    double weighted_matrix[N][N];
+    double *weighted_matrix[N];
+
+    for (int i = 0; i < row; i++)
+        weighted_matrix[i] = (double *)malloc(col * sizeof(double));
 
     for (int i = 0; i < row; i++)
     {

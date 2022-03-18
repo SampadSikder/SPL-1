@@ -3,7 +3,7 @@
 #include "matrix_operations.h"
 using namespace std;
 
-void multiply(double V[][N], double m1[][N], double m2[][N], int m, int k, int n)
+void multiply(double **V, double **m1, double **m2, int m, int k, int n)
 {
     for (int i = 0; i < m; i++)
     {
@@ -17,7 +17,7 @@ void multiply(double V[][N], double m1[][N], double m2[][N], int m, int k, int n
         }
     }
 }
-void multiply_element_wise(double V[][N], double m1[][N], double m2[][N], int m, int n)
+void multiply_element_wise(double **V, double **m1, double **m2, int m, int n)
 {
     for (int i = 0; i < m; i++)
     {
@@ -27,7 +27,7 @@ void multiply_element_wise(double V[][N], double m1[][N], double m2[][N], int m,
         }
     }
 }
-void divide_element_wise(double V[][N], double m1[][N], double m2[][N], int m, int n) // divide element wise
+void divide_element_wise(double **V, double **m1, double **m2, int m, int n) // divide element wise
 {
     for (int i = 0; i < m; i++)
     {
@@ -38,7 +38,7 @@ void divide_element_wise(double V[][N], double m1[][N], double m2[][N], int m, i
     }
 }
 
-void copy_matrix(double from[][N], double to[][N], int row, int col)
+void copy_matrix(double **from, double **to, int row, int col)
 {
     for (int i = 0; i < row; i++)
     {
@@ -66,7 +66,7 @@ void copy_matrix(double from[][N], double to[][N], int row, int col)
     }
     // print_matrix(input, col, row);
 }*/
-void normalize(double matrix[][N], int row, int col)
+void normalize(double **matrix, int row, int col)
 {
     double avg, sd, var = 0.0, sum = 0.0;
 
@@ -99,7 +99,7 @@ void normalize(double matrix[][N], int row, int col)
         }
     }
 }
-void transpose(double input_matrix[][N], double transpose_matrix[][N], int row, int col)
+void transpose(double **input_matrix, double **transpose_matrix, int row, int col)
 {
     for (int i = 0; i < row; i++)
     {
