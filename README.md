@@ -14,6 +14,7 @@ Using Frobenius norm we calculate the error. If the error is above a certain thr
 5. Added inverse and determinant functions
 6. Updated both W and H
 7. Arrived at solution
+8. Adding weighted input
 
 
 
