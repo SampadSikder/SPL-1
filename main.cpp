@@ -4,56 +4,9 @@
 #include "print_matrix.h"
 #include "matrix_operations.h"
 using namespace std;
-#define e 2.71828
-const double sigma = 5.0;
-const double Mu = 10.0;
-const double initial = 0.398922804 / sigma;
 
-double rand(double minn, double maxx)
+void Update_H_Kullback(double **W, double **H, double **V, int row, int k, int col)
 {
-    double range = (maxx - minn);
-    double div = (double)RAND_MAX / range; // 32767 is the max value of rand()
-    return minn + ((double)rand() / div);
-}
-
-double exponential() // e^(-0.5*x^2)
-{
-    double power, x;
-    // power = (-0.5 * pow(randfrom(-1, 1), 2)); // randfrom(-1,1) is a random number between 0 and 1
-    x = rand(-8.0, 10.0); // random number generator within -10.0 to 10.0
-    // cout << x << endl;
-    power = ((x - sigma) / Mu); // x-sigma/Mu is the power
-    // cout << power << endl;
-    double half = -0.5;
-    power = pow((half * power), 2.0); // e^-0.5*power^2
-    // cout << power << endl;
-    return pow(e, power);
-}
-
-double Rand_number()
-{
-    return initial * exponential(); // initial = 1/root(2pi), exponantial = e^(-0.5*x^2)
-}
-
-double cost_function(double **initial_matrix, double **current, int row, int col)
-{
-    double cost = 0.0; // epsilon
-    double sum = 0.0;
-
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < col; j++)
-        {
-            // square of the difference between initial and final for each index
-            sum += pow((initial_matrix[i][j] - current[i][j]), 2);
-        }
-    }
-    // root of the sum of squares epsilon
-    cost = sqrt(sum);
-
-    cout << "Cost is :" << cost << endl;
-
-    return cost;
 }
 
 void update_H(double **W, double **H, double **V, int row, int k, int col)
@@ -143,7 +96,7 @@ void update_W(double **W, double **H, double **V, int row, int k, int col)
 
 int main()
 {
-    freopen("in.txt", "r", stdin);
+    freopen("in2.txt", "r", stdin);
     double *matrix[N];
     int row, col, i, j, k;
 

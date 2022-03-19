@@ -10,3 +10,7 @@ void cofactor_matrix(double matrix[][N], double sub_matrix[][N], int row, int co
 double det_calculator(double D[][N], int r);
 void adjoint_matrix(double matrix[][N], double adj_matrix[][N], int n);
 void inverse_function(double matrix[][N], double inverse_matrix[][N], int row, int col);
+double cost_function(double **initial_matrix, double **current, int row, int col);
+double Rand_number();
+void row_summation(double **matrix, int row, int col);
+void column_summation(double **matrix, int row, int col);
