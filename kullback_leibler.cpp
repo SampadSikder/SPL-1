@@ -8,21 +8,24 @@ using namespace std;
 void update_H(double **W, double **H, double **V, int row, int k, int col)
 {
     double *transpose_W[N];
-    for (int i = 0; i < col; i++)
+    for (int i = 0; i < k; i++)
     {
-        transpose_W[i] = (double *)malloc(k * sizeof(double));
+        transpose_W[i] = (double *)malloc(row * sizeof(double));
     }
-    cout << "WT=";
+    // cout << "WT=";
 
-    transpose(W, transpose_W, k, col);
+    transpose(W, transpose_W, row, k);
 
-    print_matrix(transpose_W, col, k);
+    // print_matrix(transpose_W, k, row);
+
     double *WH[N];
     for (int i = 0; i < row; i++)
     {
         WH[i] = (double *)malloc(col * sizeof(double));
     }
     multiply(WH, W, H, row, k, col);
+
+    // print_matrix(WH, row, col);
 
     double *V_by_WH[N];
     // V/WH
@@ -31,9 +34,9 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
         V_by_WH[i] = (double *)malloc(col * sizeof(double));
     }
     divide_element_wise(V_by_WH, V, WH, row, col);
-    cout << "V by WH";
-    print_matrix(V_by_WH, col, k);
-    // Clearing WH
+    // cout << "V by WH";
+    //  print_matrix(V_by_WH, row, col);
+    //   Clearing WH
     for (int i = 0; i < row; i++)
     {
         free(WH[i]);
@@ -59,6 +62,35 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
         denominator[i] = (double *)malloc(sizeof(double));
     }
     multiply(denominator, transpose_W, row_one_matrix, k, row, 1); // k* row and row* 1 dimension
+    // print_matrix(denominator, k, 1);
+
+    for (int i = 0; i < row; i++)
+    {
+        free(row_one_matrix[i]);
+    }
+    double *new_H[N];
+    for (int i = 0; i < k; i++)
+    {
+        new_H[i] = (double *)malloc(col * sizeof(double));
+    }
+    // dividing each column with vector
+    for (int j = 0; j < col; j++)
+    {
+        for (int i = 0; i < k; i++)
+        {
+            new_H[i][j] = numerator[i][j] / denominator[i][0];
+        }
+    }
+    // print_matrix(new_H, k, col);
+    double *updated_H[N];
+
+    for (int i = 0; i < k; i++)
+    {
+        updated_H[i] = (double *)malloc(col * sizeof(double));
+    }
+    multiply_element_wise(updated_H, H, new_H, k, col);
+    // print_matrix(updated_H, k, col);
+    copy_matrix(updated_H, H, row, col);
 }
 
 int main()
