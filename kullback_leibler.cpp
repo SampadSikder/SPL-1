@@ -7,7 +7,7 @@ using namespace std;
 
 void update_H(double **W, double **H, double **V, int row, int k, int col)
 {
-    double *transpose_W[N];
+    double *transpose_W[k];
     for (int i = 0; i < k; i++)
     {
         transpose_W[i] = (double *)malloc(row * sizeof(double));
@@ -18,16 +18,16 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
 
     // print_matrix(transpose_W, k, row);
 
-    double *WH[N];
+    double *WH[row];
     for (int i = 0; i < row; i++)
     {
         WH[i] = (double *)malloc(col * sizeof(double));
     }
     multiply(WH, W, H, row, k, col);
 
-    // print_matrix(WH, row, col);
+    print_matrix(WH, row, col);
 
-    double *V_by_WH[N];
+    double *V_by_WH[row];
     // V/WH
     for (int i = 0; i < row; i++)
     {
@@ -35,28 +35,33 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
     }
     divide_element_wise(V_by_WH, V, WH, row, col);
     // cout << "V by WH";
-    //  print_matrix(V_by_WH, row, col);
+    // print_matrix(V_by_WH, row, col);
     //   Clearing WH
     for (int i = 0; i < row; i++)
     {
         free(WH[i]);
     }
+
     // WT*(V/WH)
-    double *numerator[N];
+    double *numerator[k];
     for (int i = 0; i < k; i++)
     {
         numerator[i] = (double *)malloc(col * sizeof(double));
     }
     multiply(numerator, transpose_W, V_by_WH, k, row, col);
 
+    for (int i = 0; i < row; i++)
+    {
+        free(V_by_WH[i]);
+    }
     // Row summation of WT i.e column summation of W
-    double *row_one_matrix[N]; // Matrix of 1 with 1 column
+    double *row_one_matrix[row]; // Matrix of 1 with 1 column
     for (int i = 0; i < row; i++)
     {
         row_one_matrix[i] = (double *)malloc(sizeof(double));
         row_one_matrix[i][0] = 1.0;
     }
-    double *denominator[N]; // matrix
+    double *denominator[k]; // matrix
     for (int i = 0; i < k; i++)
     {
         denominator[i] = (double *)malloc(sizeof(double));
@@ -68,7 +73,7 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
     {
         free(row_one_matrix[i]);
     }
-    double *new_H[N];
+    double *new_H[k];
     for (int i = 0; i < k; i++)
     {
         new_H[i] = (double *)malloc(col * sizeof(double));
@@ -82,7 +87,7 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
         }
     }
     // print_matrix(new_H, k, col);
-    double *updated_H[N];
+    double *updated_H[k];
 
     for (int i = 0; i < k; i++)
     {
@@ -90,7 +95,99 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
     }
     multiply_element_wise(updated_H, H, new_H, k, col);
     // print_matrix(updated_H, k, col);
-    copy_matrix(updated_H, H, row, col);
+    copy_matrix(updated_H, H, k, col);
+}
+void update_W(double **W, double **H, double **V, int row, int k, int col)
+{
+    double *WH[row];
+    for (int i = 0; i < row; i++)
+    {
+        WH[i] = (double *)malloc(col * sizeof(double));
+    }
+    multiply(WH, W, H, row, k, col);
+    // print_matrix(WH, row, col);
+    double *V_by_WH[row];
+    for (int i = 0; i < row; i++)
+    {
+        V_by_WH[i] = (double *)malloc(col * sizeof(double));
+    }
+
+    divide_element_wise(V_by_WH, V, WH, row, col);
+
+    for (int i = 0; i < row; i++)
+    {
+        free(WH[i]);
+    }
+
+    double *transpose_H[col];
+    for (int i = 0; i < col; i++)
+    {
+        transpose_H[i] = (double *)malloc(k * sizeof(double));
+    }
+
+    transpose(H, transpose_H, k, col);
+
+    // divide_element_wise(V_by_WH, V, WH, row, col);
+
+    double *numerator[row];
+
+    for (int i = 0; i < row; i++)
+    {
+        numerator[i] = (double *)malloc(k * sizeof(double));
+    }
+
+    multiply(numerator, V_by_WH, transpose_H, row, col, k);
+    // print_matrix(numerator, row, k);
+    for (int i = 0; i < row; i++)
+    {
+        free(V_by_WH[i]);
+    }
+
+    double *col_one_matrix[1];
+
+    col_one_matrix[0] = (double *)malloc(col * sizeof(double));
+
+    for (int i = 0; i < 1; i++) // for some reason doesnt work without this loop
+    {
+        for (int j = 0; j < col; j++)
+        {
+            col_one_matrix[i][j] = 1.0;
+        }
+    }
+
+    // print_matrix(col_one_matrix, 1, col);
+
+    double *denominator[1];
+    denominator[0] = (double *)malloc(k * sizeof(double));
+
+    multiply(denominator, col_one_matrix, transpose_H, 1, col, k);
+
+    // print_matrix(denominator, 1, k);
+
+    double *new_W[row];
+
+    for (int i = 0; i < row; i++)
+    {
+        new_W[i] = (double *)malloc(k * sizeof(double));
+    }
+
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < k; j++)
+        {
+            new_W[i][j] = numerator[i][j] / denominator[0][j];
+        }
+    }
+    // print_matrix(new_W, row, k);
+
+    double *updated_W[row];
+    for (int i = 0; i < row; i++)
+    {
+        updated_W[i] = (double *)malloc(k * sizeof(double));
+    }
+    multiply_element_wise(updated_W, W, new_W, row, k);
+    copy_matrix(updated_W, W, row, k);
+    print_matrix(W, row, k);
 }
 
 int main()
@@ -116,14 +213,14 @@ int main()
 
     normalize(matrix, row, col);
 
-    print_matrix(matrix, row, col);
-    // Generating two matrices using user input dimension and random number generator
-    //  Dimension of broken matrix
+    // print_matrix(matrix, row, col);
+    //  Generating two matrices using user input dimension and random number generator
+    //   Dimension of broken matrix
     printf("Enter dimension: ");
     cin >> k;
 
     printf("Matrix broken and initialized using Gaussian dist: ");
-    double *W[N], *H[N]; // broken down in m*k and k*n matrix
+    double *W[row], *H[k]; // broken down in m*k and k*n matrix
 
     for (int i = 0; i < row; i++)
         W[i] = (double *)malloc(k * sizeof(double));
@@ -149,7 +246,7 @@ int main()
     printf("Print broken down matrices:\n");
     print_two_matrix(W, H, row, k, col);
     // multiplication
-    double *V[N];
+    double *V[row];
     for (int i = 0; i < row; i++)
         V[i] = (double *)malloc(col * sizeof(double));
     multiply(V, W, H, row, k, col);
@@ -160,8 +257,9 @@ int main()
     double cost = cost_function(matrix, V, row, col);
 
     // kulback-leibler divergence
-    update_H(W, H, matrix, row, k, col);
-    /*while (cost > 0.05)
+    // update_H(W, H, matrix, row, k, col);
+    // update_W(W, H, matrix, row, k, col);
+    while (cost > 0.05)
     {
 
         if ((counter % 2) == 0)
@@ -179,5 +277,6 @@ int main()
         counter++;
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
-    }*/
+    }
+    printf("Number of iterations: %d", counter);
 }
