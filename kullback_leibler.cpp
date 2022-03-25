@@ -231,7 +231,7 @@ int main()
     {
         for (j = 0; j < k; j++)
         {
-            W[i][j] = Rand_number(); // send to random number generator
+            W[i][j] = Rand_number_generator(); // send to random number generator
         }
     }
 
@@ -239,7 +239,7 @@ int main()
     {
         for (j = 0; j < col; j++)
         {
-            H[i][j] = Rand_number(); // send to random number generator
+            H[i][j] = Rand_number_generator(); // send to random number generator
         }
     }
 

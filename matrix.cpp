@@ -5,7 +5,7 @@ using namespace std;
 #define e 2.71828
 const double sigma = 5.0;
 const double Mu = 10.0;
-const double initial = 0.398922804 / sigma;
+
 void multiply(double **V, double **m1, double **m2, int m, int k, int n)
 {
     for (int i = 0; i < m; i++)
@@ -134,9 +134,9 @@ double exponential() // e^(-0.5*x^2)
     return pow(e, power);
 }
 
-double Rand_number()
+double Rand_number_generator()
 {
-    return initial * exponential(); // initial = 1/root(2pi), exponantial = e^(-0.5*x^2)
+    return (0.398922804 / sigma) * exponential(); // initial = 1/root(2pi), exponantial = e^(-0.5*x^2)
 }
 
 double cost_function(double **initial_matrix, double **current, int row, int col)
