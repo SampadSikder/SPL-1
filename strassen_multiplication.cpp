@@ -6,7 +6,7 @@ int max_of_two(int n1, int n2)
 {
     return n1 > n2 ? n1 : n2;
 }
-void strassen(double A[][N], double B[][N], double **C, int n)
+void strassen(double **A, double **B, double **C, int n)
 {
     if (n == 1)
     {
@@ -80,11 +80,28 @@ int main()
     int m = (int)pow(2, max_dm);
     // cout << m;
 
-    double mat1_updated[N][N] = {0}, mat2_updated[N][N] = {0}, *result[m];
+    double *mat1_updated[m], *mat2_updated[m], *result[m];
+    for (i = 0; i < m; i++)
+    {
+        mat1_updated[i] = (double *)malloc(m * sizeof(double));
+    }
+    for (i = 0; i < m; i++)
+    {
+        mat2_updated[i] = (double *)malloc(m * sizeof(double));
+    }
 
     for (i = 0; i < m; i++)
     {
-        result[m] = (double *)malloc(m * sizeof(double));
+        for (j = 0; j < m; j++)
+        {
+            cout << "hello";
+            mat1_updated[i][j] = 0.0;
+        }
+    }
+
+    for (i = 0; i < m; i++)
+    {
+        result[i] = (double *)malloc(m * sizeof(double));
     }
 
     for (i = 0; i < row; i++)
@@ -101,8 +118,8 @@ int main()
             mat2_updated[i][j] = mat2[i][j];
         }
     }
-    print_matrix(mat1_updated, m, m);
-    print_matrix(mat2_updated, m, m);
+    // print_matrix(mat1_updated, m, m);
+    // print_matrix(mat2_updated, m, m);
 
-    strassen(mat1_updated, mat2_updated, result, m);
+    // strassen(mat1_updated, mat2_updated, result, m);
 }
