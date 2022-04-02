@@ -182,6 +182,7 @@ int main()
         counter++;
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
+        // local minima reached need to stop by calculating difference with previous error
     }
     printf("Total number of iterations before arriving at result: %d\n", counter);
     printf("Final result: ");

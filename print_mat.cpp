@@ -50,7 +50,7 @@ void print_matrix(double **V, int m, int n)
         {
             printf("%lf\t", V[i][j]);
         }
-        cout << endl;
+        printf("\n");
     }
     cout << endl;
 }
