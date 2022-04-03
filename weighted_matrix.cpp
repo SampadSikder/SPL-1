@@ -5,7 +5,78 @@
 #include "matrix_operations.h"
 
 using namespace std;
-void M_step_U(double **Y, double **U, double **V, double **X, double **W, int row, int k, int col)
+void M_step_V_update(double **Y, double **U, double **V, double **X, double **W, int row, int k, int col)
+{
+    double *transpose_Y[col];
+    for (int i = 0; i < col; i++)
+    {
+        transpose_Y[i] = (double *)malloc(row * sizeof(double));
+    }
+    transpose(Y, transpose_Y, row, col);
+    double *numerator[col];
+    for (int i = 0; i < col; i++)
+    {
+        numerator[i] = (double *)malloc(k * sizeof(double));
+    }
+    multiply(numerator, transpose_Y, U, col, row, k);
+    for (int i = 0; i < col; i++)
+    {
+        free(transpose_Y[i]);
+    }
+    // print_matrix(numerator, col, k);
+
+    double *transpose_V[col], *transpose_U[k];
+
+    for (int i = 0; i < col; i++)
+    {
+        transpose_V[i] = (double *)malloc(k * sizeof(double));
+    }
+    for (int i = 0; i < k; i++)
+    {
+        transpose_U[i] = (double *)malloc(row * sizeof(double));
+    }
+    transpose(V, transpose_V, k, col);
+    transpose(U, transpose_U, row, k);
+    double *denominator_p_1[col];
+
+    for (int i = 0; i < col; i++)
+    {
+        denominator_p_1[i] = (double *)malloc(row * sizeof(double));
+    }
+    multiply(denominator_p_1, transpose_V, transpose_U, col, k, row);
+    for (int i = 0; i < k; i++)
+    {
+        free(transpose_U[i]);
+    }
+    // print_matrix(denominator_p_1, col, row);
+
+    double *denominator[col];
+    for (int i = 0; i < col; i++)
+    {
+        denominator[i] = (double *)malloc(k * sizeof(double));
+    }
+    multiply(denominator, denominator_p_1, U, col, row, k);
+    // print_matrix(denominator, col, k);
+    double *second_part[col];
+    for (int i = 0; i < col; i++)
+    {
+        second_part[i] = (double *)malloc(k * sizeof(double));
+    }
+    divide_element_wise(second_part, numerator, denominator, col, k);
+    // print_matrix(second_part, col, k);
+
+    double *new_transpose_V[col];
+    for (int i = 0; i < col; i++)
+    {
+        new_transpose_V[i] = (double *)malloc(k * sizeof(double));
+    }
+    multiply_element_wise(new_transpose_V, transpose_V, second_part, col, k);
+    print_matrix(new_transpose_V, col, k);
+
+    transpose(new_transpose_V, V, col, k);
+    print_matrix(V, k, col);
+}
+void M_step_U_update(double **Y, double **U, double **V, double **X, double **W, int row, int k, int col)
 {
     double *numerator[row], *transpose_V[col];
     for (int i = 0; i < col; i++)
@@ -33,10 +104,15 @@ void M_step_U(double **Y, double **U, double **V, double **X, double **W, int ro
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
     multiply(denominator, denominator_p_1, transpose_V, row, col, k);
+    for (int i = 0; i < col; i++)
+    {
+        free(transpose_V[i]);
+    }
     for (int i = 0; i < row; i++)
     {
         free(denominator_p_1[i]);
     }
+
     print_matrix(denominator, row, k);
 
     double *second_part[row];
@@ -225,5 +301,6 @@ int main()
 
     E_step(Y, W, H, matrix, weighted_matrix, row, k, col);
     // print_matrix(Y, row, col);
-    M_step_U(Y, W, H, matrix, weighted_matrix, row, k, col);
+    // M_step_U_update(Y, W, H, matrix, weighted_matrix, row, k, col);
+    M_step_V_update(Y, W, H, matrix, weighted_matrix, row, k, col);
 }
