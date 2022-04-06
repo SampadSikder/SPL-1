@@ -205,3 +205,34 @@ void col_summation(double **matrix, double **colsum_matrix, int row, int k, int 
     }
     multiply(rowsum_matrix, one_matrix, transpose_matrix, row, col, k);
 }*/
+double trace(double **matrix, int index)
+{
+    double sum = 0.0;
+    for (int i = 0; i < index; i++)
+    {
+        sum += matrix[i][i];
+    }
+    return sum;
+}
+
+void push(double value)
+{
+    if (stck.top == stck.capacity)
+    {
+        cout << "Stack is full" << endl;
+        return;
+    }
+    stck.top++;
+    stck.array[stck.top] = value;
+}
+double pop()
+{
+    if (stck.top == -1)
+    {
+        cout << "Stack is empty" << endl;
+        return 0;
+    }
+    double value = stck.array[stck.top];
+    stck.top--;
+    return value;
+}

@@ -122,7 +122,7 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
         second_part[i] = (double *)malloc(k * sizeof(double));
     }
     divide_element_wise(second_part, numerator, denominator, row, k);
-    print_matrix(second_part, row, k);
+    // print_matrix(second_part, row, k);
 
     double *new_U[row];
     for (int i = 0; i < row; i++)
@@ -131,7 +131,7 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
     }
     multiply_element_wise(new_U, U, second_part, row, k);
     copy_matrix(new_U, U, row, k);
-    print_matrix(U, row, k);
+    // print_matrix(U, row, k);
 }
 void E_step(double **Y, double **U, double **V, double **X, double **W, int row, int k, int col)
 {
@@ -264,15 +264,16 @@ int main()
         {
             if (matrix[i][j] == -1)
             {
-                weighted_matrix[i][j] = EPSILON;
+                matrix[i][j] = EPSILON;
             }
         }
     }
+    normalize(matrix, row, col);
     int k;
     printf("Enter the dimension: ");
     cin >> k;
     // filled in matrix calculation
-    double *Y[N], *W[row], *H[col];
+    double *Y[N], *W[row], *H[col], *V[row];
 
     for (int i = 0; i < row; i++)
         W[i] = (double *)malloc(k * sizeof(double));
@@ -280,6 +281,8 @@ int main()
         H[i] = (double *)malloc(col * sizeof(double));
     for (int i = 0; i < row; i++)
         Y[i] = (double *)malloc(col * sizeof(double));
+    for (int i = 0; i < row; i++)
+        V[i] = (double *)malloc(col * sizeof(double));
 
     for (int i = 0; i < row; i++)
     {
@@ -301,6 +304,29 @@ int main()
 
     E_step(Y, W, H, matrix, weighted_matrix, row, k, col);
     // print_matrix(Y, row, col);
-    // M_step_U_update(Y, W, H, matrix, weighted_matrix, row, k, col);
-    M_step_V_update(Y, W, H, matrix, weighted_matrix, row, k, col);
+    int counter = 1;
+    printf("Initial cost: ");
+    // cost function
+    double cost = cost_function(matrix, V, row, col);
+
+    while (cost > 0.05)
+    {
+
+        if ((counter % 2) == 0)
+        {
+            M_step_U_update(Y, W, H, matrix, weighted_matrix, row, k, col);
+            cout << "New H:" << endl;
+            print_matrix(H, k, col);
+        }
+        else
+        {
+            M_step_V_update(Y, W, H, matrix, weighted_matrix, row, k, col);
+            cout << "New W: " << endl;
+            print_matrix(W, row, k);
+        }
+        counter++;
+        multiply(V, W, H, row, k, col);
+        cost = cost_function(matrix, V, row, col);
+        // local minima reached need to stop by calculating difference with previous error
+    }
 }
