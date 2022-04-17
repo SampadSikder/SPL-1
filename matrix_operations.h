@@ -1,6 +1,8 @@
 #pragma once
-#define EPSILON 2.2204460492503130808472633361816E-16
+#define STANDARD_EPSILON 2.2204460492503130808472633361816E-16
+#define EPSILON 1e-9
 const int N = 150;
+
 void multiply(double **V, double **m1, double **m2, int m, int k, int n);
 void divide_element_wise(double **V, double **m1, double **m2, int m, int n);
 void multiply_element_wise(double **V, double **m1, double **m2, int m, int n);
@@ -15,3 +17,4 @@ double cost_function(double **initial_matrix, double **current, int row, int col
 double Rand_number_generator();
 void row_summation(double **matrix, int row, int col);
 void column_summation(double **matrix, int row, int col);
+void free_matrix(double **matrix, int row);

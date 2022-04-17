@@ -3,6 +3,7 @@
 #include <math.h>
 #include "print_matrix.h"
 #include "matrix_operations.h"
+#include "my_library.h"
 
 using namespace std;
 void M_step_V_update(double **Y, double **U, double **V, double **X, double **W, int row, int k, int col)
@@ -19,10 +20,8 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
         numerator[i] = (double *)malloc(k * sizeof(double));
     }
     multiply(numerator, transpose_Y, U, col, row, k);
-    for (int i = 0; i < col; i++)
-    {
-        free(transpose_Y[i]);
-    }
+    free_matrix(transpose_Y, col);
+
     // print_matrix(numerator, col, k);
 
     double *transpose_V[col], *transpose_U[k];
@@ -44,10 +43,8 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
         denominator_p_1[i] = (double *)malloc(row * sizeof(double));
     }
     multiply(denominator_p_1, transpose_V, transpose_U, col, k, row);
-    for (int i = 0; i < k; i++)
-    {
-        free(transpose_U[i]);
-    }
+    free_matrix(transpose_U, k);
+
     // print_matrix(denominator_p_1, col, row);
 
     double *denominator[col];
@@ -104,14 +101,8 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
     multiply(denominator, denominator_p_1, transpose_V, row, col, k);
-    for (int i = 0; i < col; i++)
-    {
-        free(transpose_V[i]);
-    }
-    for (int i = 0; i < row; i++)
-    {
-        free(denominator_p_1[i]);
-    }
+    free_matrix(transpose_V, col);
+    free_matrix(denominator_p_1, row);
 
     print_matrix(denominator, row, k);
 
@@ -160,10 +151,7 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
             one_minus_weight[i][j] = one_matrix[i][j] - W[i][j];
         }
     }
-    for (int i = 0; i < row; i++)
-    {
-        free(one_matrix[i]);
-    }
+    free_matrix(one_matrix, row);
 
     double *UVT[row];
 
@@ -184,15 +172,8 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
 
     multiply_element_wise(second_part, one_minus_weight, UVT, row, col);
 
-    for (int i = 0; i < row; i++)
-    {
-        free(one_minus_weight[i]);
-    }
-
-    for (int i = 0; i < row; i++)
-    {
-        free(UVT[i]);
-    }
+    free_matrix(one_minus_weight, row);
+    free_matrix(UVT, row);
 
     // print_matrix(second_part, row, col);
 
@@ -264,7 +245,7 @@ int main()
         {
             if (matrix[i][j] == -1)
             {
-                matrix[i][j] = EPSILON;
+                matrix[i][j] = STANDARD_EPSILON;
             }
         }
     }
@@ -300,7 +281,7 @@ int main()
         }
     }
 
-    // E steo if EM-WNMF
+    // E step if EM-WNMF
 
     E_step(Y, W, H, matrix, weighted_matrix, row, k, col);
     // print_matrix(Y, row, col);
@@ -308,7 +289,7 @@ int main()
     printf("Initial cost: ");
     // cost function
     double cost = cost_function(matrix, V, row, col);
-
+    stck.push(cost);
     while (cost > 0.05)
     {
 
@@ -328,5 +309,27 @@ int main()
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
         // local minima reached need to stop by calculating difference with previous error
+        if (fabs(stck.top() - cost) <= EPSILON)
+        {
+            printf("%lf", stck.top() - cost);
+            printf("Reached relative minima\n");
+            break;
+        }
+        else
+        {
+            if (stck.pop())
+            {
+                stck.push(cost);
+            }
+        }
     }
+    printf("Final cost: ");
+    cout << cost_function(matrix, V, row, col) << endl;
+    cout << "Final Second Matrix: " << endl;
+    print_matrix(H, k, col);
+    cout << "Final First Matrix: " << endl;
+    print_matrix(W, row, k);
+    cout << "Final Matrix: " << endl;
+    print_matrix(V, row, col);
+    return 0;
 }

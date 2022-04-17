@@ -6,7 +6,7 @@ using namespace std;
 void print_two_matrix(double **m1, double **m2, int m, int k, int n)
 {
 
-    printf("W=\n");
+    printf("First matrix=\n");
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < k; j++)
@@ -15,7 +15,7 @@ void print_two_matrix(double **m1, double **m2, int m, int k, int n)
         }
         cout << endl;
     }
-    printf("H=\n");
+    printf("Second matrix=\n");
 
     for (int i = 0; i < k; i++)
     {

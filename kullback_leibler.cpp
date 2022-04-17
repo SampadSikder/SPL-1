@@ -3,6 +3,7 @@
 #include <math.h>
 #include "print_matrix.h"
 #include "matrix_operations.h"
+#include "my_library.h"
 using namespace std;
 
 void update_H(double **W, double **H, double **V, int row, int k, int col)
@@ -37,10 +38,7 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
     // cout << "V by WH";
     // print_matrix(V_by_WH, row, col);
     //   Clearing WH
-    for (int i = 0; i < row; i++)
-    {
-        free(WH[i]);
-    }
+    free_matrix(WH, row);
 
     // WT*(V/WH)
     double *numerator[k];
@@ -50,10 +48,8 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
     }
     multiply(numerator, transpose_W, V_by_WH, k, row, col);
 
-    for (int i = 0; i < row; i++)
-    {
-        free(V_by_WH[i]);
-    }
+    free_matrix(V_by_WH, row);
+
     // Row summation of WT i.e column summation of W
     double *row_one_matrix[row]; // Matrix of 1 with 1 column
     for (int i = 0; i < row; i++)
@@ -69,10 +65,8 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
     multiply(denominator, transpose_W, row_one_matrix, k, row, 1); // k* row and row* 1 dimension
     // print_matrix(denominator, k, 1);
 
-    for (int i = 0; i < row; i++)
-    {
-        free(row_one_matrix[i]);
-    }
+    free_matrix(row_one_matrix, row);
+
     double *new_H[k];
     for (int i = 0; i < k; i++)
     {
@@ -114,10 +108,7 @@ void update_W(double **W, double **H, double **V, int row, int k, int col)
 
     divide_element_wise(V_by_WH, V, WH, row, col);
 
-    for (int i = 0; i < row; i++)
-    {
-        free(WH[i]);
-    }
+    free_matrix(WH, row);
 
     double *transpose_H[col];
     for (int i = 0; i < col; i++)
@@ -138,10 +129,7 @@ void update_W(double **W, double **H, double **V, int row, int k, int col)
 
     multiply(numerator, V_by_WH, transpose_H, row, col, k);
     // print_matrix(numerator, row, k);
-    for (int i = 0; i < row; i++)
-    {
-        free(V_by_WH[i]);
-    }
+    free_matrix(V_by_WH, col);
 
     double *col_one_matrix[1];
 
@@ -259,6 +247,7 @@ int main()
     // kulback-leibler divergence
     // update_H(W, H, matrix, row, k, col);
     // update_W(W, H, matrix, row, k, col);
+    stck.push(cost);
     while (cost > 0.05)
     {
 
@@ -277,6 +266,24 @@ int main()
         counter++;
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
+        if (fabs(stck.top() - cost) <= EPSILON)
+        {
+            printf("%lf", stck.top() - cost);
+            printf("Reached relative minima\n");
+            break;
+        }
+        else
+        {
+            if (stck.size() == 10)
+            {
+                stck.pop();
+            }
+            stck.push(cost);
+        }
     }
     printf("Number of iterations: %d", counter);
+    printf("The main matrix: ");
+    print_matrix(matrix, row, col);
+    printf("The broken down matrix: ");
+    print_two_matrix(W, H, row, k, col);
 }

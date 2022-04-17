@@ -3,11 +3,8 @@
 #include <math.h>
 #include "print_matrix.h"
 #include "matrix_operations.h"
+#include "my_library.h"
 using namespace std;
-
-void Update_H_Kullback(double **W, double **H, double **V, int row, int k, int col)
-{
-}
 
 void update_H(double **W, double **H, double **V, int row, int k, int col)
 {
@@ -96,7 +93,7 @@ void update_W(double **W, double **H, double **V, int row, int k, int col)
 
 int main()
 {
-    freopen("in2.txt", "r", stdin);
+    freopen("in.txt", "r", stdin);
     double *matrix[N];
     int row, col, i, j, k;
 
@@ -163,7 +160,7 @@ int main()
     printf("Initial cost: ");
     // cost function
     double cost = cost_function(matrix, V, row, col);
-
+    stck.push(cost);
     while (cost > 0.05)
     {
 
@@ -182,9 +179,28 @@ int main()
         counter++;
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
+        if (fabs(stck.top() - cost) <= EPSILON)
+        {
+            printf("\nCost=%lf\n", stck.top() - cost);
+            printf("Reached relative minima\n");
+            break;
+        }
+        else
+        {
+            if (stck.size() == 10)
+            {
+                stck.pop();
+            }
+            stck.push(cost);
+        }
+
         // local minima reached need to stop by calculating difference with previous error
     }
+
     printf("Total number of iterations before arriving at result: %d\n", counter);
     printf("Final result: ");
+    printf("The main matrix: ");
+    print_matrix(matrix, row, col);
+    printf("The broken down matrix: ");
     print_two_matrix(W, H, row, k, col);
 }

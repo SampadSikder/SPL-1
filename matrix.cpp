@@ -214,25 +214,11 @@ double trace(double **matrix, int index)
     }
     return sum;
 }
-
-void push(double value)
+void free_matrix(double **matrix, int row)
 {
-    if (stck.top == stck.capacity)
+    for (int i = 0; i < row; i++)
     {
-        cout << "Stack is full" << endl;
-        return;
+        free(matrix[i]);
     }
-    stck.top++;
-    stck.array[stck.top] = value;
-}
-double pop()
-{
-    if (stck.top == -1)
-    {
-        cout << "Stack is empty" << endl;
-        return 0;
-    }
-    double value = stck.array[stck.top];
-    stck.top--;
-    return value;
+    free(matrix);
 }
