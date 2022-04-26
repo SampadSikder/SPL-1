@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 #include "matrix_operations.h"
 #include "print_matrix.h"
-#include "my_library.h"
 using namespace std;
 void Update_U(double **X, double **W, double **U, double **V, int row, int k, int col)
 {
@@ -33,12 +32,13 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
         UV[i] = (double *)malloc(col * sizeof(double));
     }
     multiply(UV, U, V, row, k, col);
+    // print_matrix(UV, row, col);
     double *denominator_p_1[row];
     for (int i = 0; i < row; i++)
     {
         denominator_p_1[i] = (double *)malloc(col * sizeof(double));
     }
-    multiply_element_wise(denominator_p_1, UV, W, row, col);
+    multiply_element_wise(denominator_p_1, W, UV, row, col);
     free_matrix(UV, row);
     // print_matrix(denominator_p_1, row, col);
     double *denominator[row];
@@ -48,7 +48,7 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
     }
     multiply(denominator, denominator_p_1, transpose_V, row, col, k);
     free_matrix(denominator_p_1, row);
-    // print_matrix(denominator, row, k);
+    print_matrix(denominator, row, k);
 
     double *second_part[row];
     for (int i = 0; i < row; i++)
@@ -92,7 +92,7 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
     }
     multiply_element_wise(numerator_p_1, transpose_W, transpose_X, col, row);
     free_matrix(transpose_X, col);
-
+    // print_matrix(numerator_p_1, col, row);
     double *numerator[col];
     for (int i = 0; i < col; i++)
     {
@@ -113,14 +113,15 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
         transpose_U[i] = (double *)malloc(row * sizeof(double));
     }
     transpose(U, transpose_U, row, k);
-
+    // print_matrix(transpose_V, col, k);
+    // print_matrix(transpose_U, k, row);
     double *VUT[col];
     for (int i = 0; i < col; i++)
     {
         VUT[i] = (double *)malloc(row * sizeof(double));
     }
     multiply(VUT, transpose_V, transpose_U, col, k, row);
-    free_matrix(transpose_V, col);
+    // print_matrix(VUT, col, row);
     free_matrix(transpose_U, k);
 
     double *denominator_p_1[col];
@@ -148,18 +149,25 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
     divide_element_wise(second_part, numerator, denominator, col, k);
     free_matrix(numerator, col);
     free_matrix(denominator, col);
-
-    double *Updated_V[col];
+    // print_matrix(second_part, col, k);
+    double *Updated_VTranspose[col];
     for (int i = 0; i < col; i++)
     {
-        Updated_V[i] = (double *)malloc(k * sizeof(double));
+        Updated_VTranspose[i] = (double *)malloc(k * sizeof(double));
     }
-    multiply_element_wise(Updated_V, V, second_part, col, k);
-    print_matrix(Updated_V, col, k);
-    copy_matrix(Updated_V, V, col, k);
-    // free_matrix(Updated_V, col);
+    multiply_element_wise(Updated_VTranspose, transpose_V, second_part, col, k);
+    // print_matrix(Updated_VTranspose, col, k);
+    double *Updated_V[k];
+    for (int i = 0; i < k; i++)
+    {
+        Updated_V[i] = (double *)malloc(col * sizeof(double));
+    }
+    transpose(Updated_VTranspose, Updated_V, col, k);
+    // print_matrix(Updated_V, k, col);
+    copy_matrix(Updated_V, V, k, col);
+    free_matrix(Updated_V, k);
 }
-int main()
+void regularizedMatrix()
 {
     freopen("in4.txt", "r", stdin);
     double *matrix[N];
@@ -201,7 +209,7 @@ int main()
     }
     cout << "Weighted matrix: " << endl;
     // print_matrix(weighted_matrix, row, col);
-    cout << "Enter user defined Lambda value: " << endl;
+    cout << "Enter user defined Lambda value: (Between 0 and 1)" << endl;
     double lambda;
     cin >> lambda;
     // adding standard epsilon value to weighted matrix
@@ -246,19 +254,22 @@ int main()
             H[i][j] = Rand_number_generator(); // send to random number generator
         }
     }
-
+    // Update_U(matrix, weighted_matrix, W, H, row, k, col);
+    // Update_V(matrix, weighted_matrix, W, H, row, k, col);
     // WNMF
     //
     //
+    // cost function
     int counter = 1;
     printf("Initial cost: ");
-    // cost function
+    multiply(V, W, H, row, k, col);
     double cost = cost_function(matrix, V, row, col);
-    stck.push(cost);
+    double starting_cost = cost;
+    double prev_cost = 0.0;
     while (cost > 0.05)
     {
 
-        if ((counter % 2) == 0)
+        if ((counter % 2) != 0)
         {
             Update_U(matrix, weighted_matrix, W, H, row, k, col);
             cout << "New H:" << endl;
@@ -273,30 +284,26 @@ int main()
         counter++;
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
-        if (fabs(stck.top() - cost) <= EPSILON)
+        if (fabs(prev_cost - cost) <= EPSILON)
         {
-            printf("\nCost=%lf\n", stck.top() - cost);
+            printf("\nCost=%lf\n", fabs(prev_cost - cost));
             printf("Reached relative minima\n");
             break;
         }
         else
         {
-            if (stck.size() == 10)
-            {
-                stck.pop();
-            }
-            stck.push(cost);
+            prev_cost = cost;
         }
 
         // local minima reached need to stop by calculating difference with previous error
     }
-
+    printf("The beginning cost was: %lf\n", starting_cost);
     printf("Total number of iterations before arriving at result: %d\n", counter);
-    printf("Final result: ");
-    printf("The main matrix: ");
+    printf("Final results:\n ");
+    printf("The main matrix:\n ");
     print_matrix(matrix, row, col);
-    printf("The W matrix: ");
+    printf("The W matrix:\n ");
     print_matrix(W, row, k);
-    printf("The H matrix: ");
+    printf("The H matrix:\n ");
     print_matrix(H, k, col);
 }

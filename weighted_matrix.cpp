@@ -3,6 +3,7 @@
 #include <math.h>
 #include "print_matrix.h"
 #include "matrix_operations.h"
+#include "matrix_factorizations.h"
 #include "my_library.h"
 
 using namespace std;
@@ -195,7 +196,7 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
     }
 }
 
-int main()
+void weightedMatrix()
 {
     freopen("in2.txt", "r", stdin);
     double *matrix[N];
@@ -289,7 +290,8 @@ int main()
     printf("Initial cost: ");
     // cost function
     double cost = cost_function(matrix, V, row, col);
-    stck.push(cost);
+    double starting_cost = cost;
+    double prev_cost = 0.0;
     while (cost > 0.05)
     {
 
@@ -309,27 +311,24 @@ int main()
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
         // local minima reached need to stop by calculating difference with previous error
-        if (fabs(stck.top() - cost) <= EPSILON)
+        if (fabs(prev_cost - cost) <= EPSILON)
         {
-            printf("%lf", stck.top() - cost);
+            printf("%lf\n", cost);
             printf("Reached relative minima\n");
             break;
         }
         else
         {
-            if (stck.pop())
-            {
-                stck.push(cost);
-            }
+            prev_cost = cost;
         }
     }
-    printf("Final cost: ");
-    cout << cost_function(matrix, V, row, col) << endl;
-    cout << "Final Second Matrix: " << endl;
-    print_matrix(H, k, col);
-    cout << "Final First Matrix: " << endl;
+    printf("The beginning cost was: %lf\n", starting_cost);
+    printf("Total number of iterations before arriving at result: %d\n", counter);
+    printf("Final results:\n ");
+    printf("The main matrix:\n ");
+    print_matrix(matrix, row, col);
+    printf("The W matrix:\n ");
     print_matrix(W, row, k);
-    cout << "Final Matrix: " << endl;
-    print_matrix(V, row, col);
-    return 0;
+    printf("The H matrix:\n ");
+    print_matrix(H, k, col);
 }

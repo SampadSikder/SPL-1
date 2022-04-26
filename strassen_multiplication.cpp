@@ -147,7 +147,7 @@ void print_matrix(double V[][N], int m, int n)
     }
     cout << endl;
 }
-int main()
+void strassenMultiplication()
 {
     freopen("in3.txt", "r", stdin);
 

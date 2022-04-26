@@ -3,10 +3,10 @@
 #include <math.h>
 #include "print_matrix.h"
 #include "matrix_operations.h"
-#include "my_library.h"
+#include "matrix_factorizations.h"
 using namespace std;
 
-void update_H(double **W, double **H, double **V, int row, int k, int col)
+void update_H_kullback(double **W, double **H, double **V, int row, int k, int col)
 {
     double *transpose_W[k];
     for (int i = 0; i < k; i++)
@@ -26,7 +26,7 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
     }
     multiply(WH, W, H, row, k, col);
 
-    print_matrix(WH, row, col);
+    // print_matrix(WH, row, col);
 
     double *V_by_WH[row];
     // V/WH
@@ -90,8 +90,10 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
     multiply_element_wise(updated_H, H, new_H, k, col);
     // print_matrix(updated_H, k, col);
     copy_matrix(updated_H, H, k, col);
+    free_matrix(updated_H, k);
+    free_matrix(new_H, k);
 }
-void update_W(double **W, double **H, double **V, int row, int k, int col)
+void update_W_kullback(double **W, double **H, double **V, int row, int k, int col)
 {
     double *WH[row];
     for (int i = 0; i < row; i++)
@@ -175,12 +177,13 @@ void update_W(double **W, double **H, double **V, int row, int k, int col)
     }
     multiply_element_wise(updated_W, W, new_W, row, k);
     copy_matrix(updated_W, W, row, k);
-    print_matrix(W, row, k);
+    free_matrix(updated_W, row);
+    free_matrix(new_W, row);
 }
 
-int main()
+void kullbackLeibler()
 {
-    freopen("in2.txt", "r", stdin);
+    freopen("in5.txt", "r", stdin);
     double *matrix[N];
     int row, col, i, j, k;
 
@@ -243,47 +246,41 @@ int main()
     printf("Initial cost: ");
     // cost function
     double cost = cost_function(matrix, V, row, col);
-
-    // kulback-leibler divergence
-    // update_H(W, H, matrix, row, k, col);
-    // update_W(W, H, matrix, row, k, col);
-    stck.push(cost);
+    double initial_cost = cost;
+    double prev_cost = 0;
     while (cost > 0.05)
     {
 
         if ((counter % 2) == 0)
         {
-            update_H(W, H, matrix, row, k, col);
+            update_H_kullback(W, H, matrix, row, k, col);
             cout << "New H:" << endl;
             print_matrix(H, k, col);
         }
         else
         {
-            update_W(W, H, matrix, row, k, col);
+            update_W_kullback(W, H, matrix, row, k, col);
             cout << "New W: " << endl;
             print_matrix(W, row, k);
         }
         counter++;
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
-        if (fabs(stck.top() - cost) <= EPSILON)
+        if (fabs(prev_cost - cost) <= EPSILON)
         {
-            printf("%lf", stck.top() - cost);
+            printf("%lf", fabs(prev_cost - cost));
             printf("Reached relative minima\n");
             break;
         }
         else
         {
-            if (stck.size() == 10)
-            {
-                stck.pop();
-            }
-            stck.push(cost);
+            prev_cost = cost;
         }
     }
-    printf("Number of iterations: %d", counter);
-    printf("The main matrix: ");
+    printf("The beginning cost was: %lf\n", initial_cost);
+    printf("Number of iterations: %d\n", counter);
+    printf("The main matrix:\n ");
     print_matrix(matrix, row, col);
-    printf("The broken down matrix: ");
+    printf("The broken down matrices:\n ");
     print_two_matrix(W, H, row, k, col);
 }
