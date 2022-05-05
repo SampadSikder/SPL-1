@@ -1,5 +1,4 @@
 #include <iostream>
-#include <bits/stdc++.h>
 #include <math.h>
 #include "print_matrix.h"
 #include "matrix_operations.h"
@@ -268,7 +267,7 @@ void kullbackLeibler()
         cost = cost_function(matrix, V, row, col);
         if (fabs(prev_cost - cost) <= EPSILON)
         {
-            printf("%lf", fabs(prev_cost - cost));
+            printf("\n%lf\n", fabs(prev_cost - cost));
             printf("Reached relative minima\n");
             break;
         }

@@ -40,4 +40,4 @@ struct stack
     {
         return index + 1;
     }
-} stck;
+};

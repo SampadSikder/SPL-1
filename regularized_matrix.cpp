@@ -1,4 +1,5 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <math.h>
 #include "matrix_operations.h"
 #include "print_matrix.h"
 using namespace std;

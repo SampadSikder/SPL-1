@@ -1,5 +1,5 @@
 #include <iostream>
-#include <bits/stdc++.h>
+#include <math.h>
 #include "matrix_operations.h"
 using namespace std;
 #define e 2.71828
@@ -159,52 +159,6 @@ double cost_function(double **initial_matrix, double **current, int row, int col
 
     return cost;
 }
-/*void row_summation(double **matrix, double **rowsum_matrix, int row, int k, int col)
-{
-    double *transpose_matrix[N];
-    for (int i = 0; i < col; i++)
-    {
-        transpose_matrix[i] = (double *)malloc(k * sizeof(double));
-    }
-    transpose(matrix, transpose_matrix, k, col);
-    double *one_matrix[N];
-    for (int i = 0; i < row; i++)
-    {
-        one_matrix[i] = (double *)malloc(col * sizeof(double));
-    }
-
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < col; j++)
-        {
-            one_matrix[i][j] = 1;
-        }
-    }
-    multiply(rowsum_matrix, one_matrix, transpose_matrix, row, col, k);
-}
-void col_summation(double **matrix, double **colsum_matrix, int row, int k, int col)
-{
-    double *transpose_matrix[N];
-    for (int i = 0; i < col; i++)
-    {
-        transpose_matrix[i] = (double *)malloc(k * sizeof(double));
-    }
-    transpose(matrix, transpose_matrix, k, col);
-    double *one_matrix[N];
-    for (int i = 0; i < row; i++)
-    {
-        one_matrix[i] = (double *)malloc(col * sizeof(double));
-    }
-
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < col; j++)
-        {
-            one_matrix[i][j] = 1;
-        }
-    }
-    multiply(rowsum_matrix, one_matrix, transpose_matrix, row, col, k);
-}*/
 double trace(double **matrix, int index)
 {
     double sum = 0.0;

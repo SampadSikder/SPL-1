@@ -1,4 +1,5 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <math.h>
 #include "print_matrix.h"
 // const int N = 150;
 using namespace std;

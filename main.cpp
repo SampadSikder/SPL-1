@@ -8,8 +8,7 @@ int main()
     printf("2. Matrix factorization using Kullback-Leibler divergence\n");
     printf("3. Matrix factorization using Weighted matrix without regularization\n");
     printf("4. Matrix factorization using Weighted matrix with regularization\n");
-    printf("5. Moore Penrose PsuedoInverse of matrix\n");
-    printf("6. Derivative of a matrix\n");
+    printf("5. Derivative of a matrix\n");
 
     int choice;
     printf("Enter your choice: ");
@@ -32,6 +31,11 @@ int main()
     case 4:
         printf("You have chosen Weighted matrix with regularization\n");
         regularizedMatrix();
+        break;
+
+    case 5:
+        printf("You have chosen Derivative of a matrix\n");
+        derivative();
         break;
     }
     // kullbackLeibler();

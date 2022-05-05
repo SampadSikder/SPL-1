@@ -1,5 +1,4 @@
 #include <iostream>
-#include <bits/stdc++.h>
 #include <math.h>
 #include "print_matrix.h"
 #include "matrix_operations.h"
@@ -201,4 +200,62 @@ void gradientDescent()
     print_matrix(matrix, row, col);
     printf("The broken down matrix:\n ");
     print_two_matrix(W, H, row, k, col);
+}
+void gradientDescent(double **matrix, double **A, double **B, int row, int col, int k)
+{
+    int i, j;
+    for (i = 0; i < row; i++)
+    {
+        for (j = 0; j < k; j++)
+        {
+            A[i][j] = Rand_number_generator(); // send to random number generator
+        }
+    }
+
+    for (i = 0; i < k; i++)
+    {
+        for (j = 0; j < col; j++)
+        {
+            B[i][j] = Rand_number_generator(); // send to random number generator
+        }
+    }
+    double *V[N];
+    for (int i = 0; i < row; i++)
+        V[i] = (double *)malloc(col * sizeof(double));
+
+    int counter = 1;
+    printf("Initial cost:\n");
+    // cost function
+    double cost = cost_function(matrix, V, row, col);
+    double initial_cost = cost;
+    double prev_cost = 0;
+
+    while (cost > 0.05)
+    {
+
+        if ((counter % 2) == 0)
+        {
+            update_H(A, B, matrix, row, k, col);
+        }
+        else
+        {
+            update_W(A, B, matrix, row, k, col);
+        }
+        counter++;
+        multiply(V, A, B, row, k, col);
+        cost = cost_function(matrix, V, row, col);
+        if (fabs(prev_cost - cost) <= EPSILON)
+        {
+            printf("\nCost=%lf\n", fabs(prev_cost - cost));
+            printf("Reached relative minima\n");
+            break;
+        }
+        else
+        {
+            prev_cost = cost;
+        }
+
+        // local minima reached need to stop by calculating difference with previous error
+    }
+    printf("Factorization done!\n");
 }
