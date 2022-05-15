@@ -34,7 +34,6 @@ void strassen(double **A, double **B, double **C, int n)
     if (n == 1)
     {
         C[0][0] = A[0][0] * B[0][0];
-        // cout << "Return";
         return;
     }
     else
@@ -88,11 +87,11 @@ void strassen(double **A, double **B, double **C, int n)
                 B22[i][j] = B[i + divide][j + divide];
             }
         }
-        MatrixAdd(A11, A22, AResult, divide);
+        MatrixAdd(A11, A22, AResult, divide);   // a11 + a22
         MatrixAdd(B11, B22, BResult, divide);   // b11 + b22
         strassen(AResult, BResult, P1, divide); // p1 = (a11+a22) * (b11+b22)
 
-        MatrixAdd(A21, A22, AResult, divide); // a21+a22
+        MatrixAdd(A21, A22, AResult, divide); // a21 + a22
         strassen(AResult, B11, P2, divide);   // p2 = (a21+a22) * (b11)
 
         MatrixSubtract(B12, B22, BResult, divide); // b12 - b22
@@ -106,22 +105,26 @@ void strassen(double **A, double **B, double **C, int n)
 
         MatrixSubtract(A21, A11, AResult, divide); // a21 - a11
         MatrixAdd(B11, B12, BResult, divide);      // b11 + b12
-        strassen(AResult, BResult, P6, divide);    // p6 = (a21-a11) * (b11)
+        strassen(AResult, BResult, P6, divide);    // p6 = (a21-a11) * (b11+b12)
 
         MatrixSubtract(A12, A22, AResult, divide); // a12 - a22
         MatrixAdd(B21, B22, BResult, divide);      // b21 + b22
         strassen(AResult, BResult, P7, divide);    // p7 = (a12-a22) * (b21+b22)
 
+        // calculating c21, c21, c11 e c22:
+
         MatrixAdd(P3, P5, C12, divide); // c12 = p3 + p5
         MatrixAdd(P2, P4, C21, divide); // c21 = p2 + p4
 
-        MatrixAdd(P1, P4, AResult, divide);           // a11 + a22
-        MatrixSubtract(AResult, P7, BResult, divide); // b11 + b22
-        MatrixAdd(BResult, P5, C11, divide);          // c11 = c12 + b11 + b22
+        MatrixAdd(P1, P4, AResult, divide);       // p1 + p4
+        MatrixAdd(AResult, P7, BResult, divide);  // p1 + p4 + p7
+        MatrixSubtract(BResult, P5, C11, divide); // c11 = p1 + p4 - p5 + p7
 
-        MatrixAdd(P1, P3, AResult, divide);       // a11 + a22
-        MatrixAdd(AResult, P6, BResult, divide);  // b11 + b12
-        MatrixSubtract(BResult, P2, C22, divide); // c22 = c11 - b11 + b12
+        MatrixAdd(P1, P3, AResult, divide);       // p1 + p3
+        MatrixAdd(AResult, P6, BResult, divide);  // p1 + p3 + p6
+        MatrixSubtract(BResult, P2, C22, divide); // c22 = p1 + p3 - p2 + p6
+
+        // Grouping the results obtained in a single matrice:
 
         for (int i = 0; i < divide; i++)
         {
@@ -133,7 +136,6 @@ void strassen(double **A, double **B, double **C, int n)
                 C[i + divide][j + divide] = C22[i][j];
             }
         }
-        // cout << "Answer made" << endl;
     }
 }
 void print_matrix(double V[][N], int m, int n)
