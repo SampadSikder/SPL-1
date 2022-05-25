@@ -18,3 +18,4 @@ double Rand_number_generator();
 void row_summation(double **matrix, int row, int col);
 void column_summation(double **matrix, int row, int col);
 void free_matrix(double **matrix, int row);
+void strassenMultiplication(double **V, double **m1, double **m2, int m, int k, int n);

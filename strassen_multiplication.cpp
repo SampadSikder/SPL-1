@@ -1,6 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include "print_matrix.h"
+#include "matrix_operations.h"
 // const int N = 150;
 using namespace std;
 int max_of_two(int n1, int n2)
@@ -150,49 +151,14 @@ void print_matrix(double V[][N], int m, int n)
     }
     cout << endl;
 }
-void strassenMultiplication()
+void strassenMultiplication(double **V, double **m1, double **m2, int row, int k, int col)
 {
-    freopen("in3.txt", "r", stdin);
-
-    int row, k, i, j;
-    cin >> row >> k;
-
-    double *mat1[row];
-
-    for (i = 0; i < row; i++)
-    {
-        mat1[i] = (double *)malloc(k * sizeof(double));
-    }
-
-    for (i = 0; i < row; i++)
-    {
-        for (j = 0; j < k; j++)
-        {
-            cin >> mat1[i][j];
-        }
-    }
-
-    int col;
-    cin >> col;
-    double *mat2[k];
-    for (i = 0; i < k; i++)
-    {
-        mat2[i] = (double *)malloc(col * sizeof(double));
-    }
-
-    for (i = 0; i < k; i++)
-    {
-        for (j = 0; j < col; j++)
-        {
-            cin >> mat2[i][j];
-        }
-    }
     // print_matrix(mat1, row, k);
     // print_matrix(mat2, k, col);
 
     // creating square matrices of order 2^n for all and initializing empty cells with 0
     // maximum of row,k,col
-    int max_dm, temp;
+    int max_dm, temp, i, j;
     temp = max_of_two(row, k);
     max_dm = max_of_two(temp, col);
     // cout << max_dm;
@@ -236,14 +202,14 @@ void strassenMultiplication()
     {
         for (j = 0; j < k; j++)
         {
-            mat1_updated[i][j] = mat1[i][j];
+            mat1_updated[i][j] = m1[i][j];
         }
     }
     for (i = 0; i < k; i++)
     {
         for (j = 0; j < col; j++)
         {
-            mat2_updated[i][j] = mat2[i][j];
+            mat2_updated[i][j] = m2[i][j];
         }
     }
     // print_matrix(mat1_updated, m, m);
@@ -251,5 +217,5 @@ void strassenMultiplication()
 
     strassen(mat1_updated, mat2_updated, result, m);
 
-    print_matrix(result, row, col);
+    copy_matrix(result, V, row, col);
 }

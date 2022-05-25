@@ -9,8 +9,6 @@ int main()
     printf("3. Matrix factorization using Weighted matrix without regularization\n");
     printf("4. Matrix factorization using Weighted matrix with regularization\n");
     printf("5. Derivative of a matrix\n");
-    printf("6. Strassen's Matrix Multiplication\n");
-
     int choice;
     printf("Enter your choice: ");
     scanf("%d", &choice);
@@ -39,8 +37,6 @@ int main()
         derivative();
         break;
     case 6:
-        printf("Strassen's matrix multiplication\n");
-        strassenMultiplication();
         break;
     }
     // kullbackLeibler();

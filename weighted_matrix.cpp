@@ -52,7 +52,7 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
-    multiply(denominator, denominator_p_1, U, col, row, k);
+    strassenMultiplication(denominator, denominator_p_1, U, col, row, k);
     // print_matrix(denominator, col, k);
     double *second_part[col];
     for (int i = 0; i < col; i++)
@@ -85,7 +85,7 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
     {
         numerator[i] = (double *)malloc(k * sizeof(double));
     }
-    multiply(numerator, Y, transpose_V, row, col, k);
+    strassenMultiplication(numerator, Y, transpose_V, row, col, k);
     // print_matrix(numerator, row, k);
 
     double *denominator_p_1[row], *denominator[row];
@@ -100,7 +100,7 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
-    multiply(denominator, denominator_p_1, transpose_V, row, col, k);
+    strassenMultiplication(denominator, denominator_p_1, transpose_V, row, col, k);
     free_matrix(transpose_V, col);
     free_matrix(denominator_p_1, row);
 
@@ -160,7 +160,7 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
         UVT[i] = (double *)malloc(col * sizeof(double));
     }
 
-    multiply(UVT, U, V, row, k, col);
+    strassenMultiplication(UVT, U, V, row, k, col);
     // print_matrix(UVT, row, col);
 
     double *second_part[row];
@@ -287,6 +287,7 @@ void weightedMatrix()
     // print_matrix(Y, row, col);
     int counter = 1;
     printf("Initial cost: ");
+    strassenMultiplication(V, W, H, row, k, col);
     // cost function
     double cost = cost_function(matrix, V, row, col);
     double starting_cost = cost;
