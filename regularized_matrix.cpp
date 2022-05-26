@@ -49,7 +49,7 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
     }
     strassenMultiplication(denominator, denominator_p_1, transpose_V, row, col, k);
     free_matrix(denominator_p_1, row);
-    print_matrix(denominator, row, k);
+    // print_matrix(denominator, row, k);
 
     double *second_part[row];
     for (int i = 0; i < row; i++)
@@ -170,7 +170,7 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
 }
 void regularizedMatrix()
 {
-    freopen("in4.txt", "r", stdin);
+    freopen("wnmf2.txt", "r", stdin);
     double *matrix[N];
     int row, col;
 
@@ -263,7 +263,7 @@ void regularizedMatrix()
     // cost function
     int counter = 1;
     printf("Initial cost: ");
-    multiply(V, W, H, row, k, col);
+    strassenMultiplication(V, W, H, row, k, col);
     double cost = cost_function(matrix, V, row, col);
     double starting_cost = cost;
     double prev_cost = 0.0;
@@ -273,21 +273,18 @@ void regularizedMatrix()
         if ((counter % 2) != 0)
         {
             Update_U(matrix, weighted_matrix, W, H, row, k, col);
-            cout << "New H:" << endl;
-            print_matrix(H, k, col);
+            cout << "New H" << endl;
         }
         else
         {
             Update_V(matrix, weighted_matrix, W, H, row, k, col);
-            cout << "New W: " << endl;
-            print_matrix(W, row, k);
+            cout << "New W" << endl;
         }
         counter++;
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
         if (fabs(prev_cost - cost) <= EPSILON)
         {
-            printf("\nCost=%lf\n", fabs(prev_cost - cost));
             printf("Reached relative minima\n");
             break;
         }
@@ -298,6 +295,7 @@ void regularizedMatrix()
 
         // local minima reached need to stop by calculating difference with previous error
     }
+    freopen("result2.txt", "w", stdout);
     printf("The beginning cost was: %lf\n", starting_cost);
     printf("Total number of iterations before arriving at result: %d\n", counter);
     printf("Final results:\n ");

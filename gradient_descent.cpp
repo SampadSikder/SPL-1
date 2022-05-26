@@ -92,7 +92,7 @@ void update_W(double **W, double **H, double **V, int row, int k, int col)
 
 void gradientDescent()
 {
-    freopen("in.txt", "r", stdin);
+    freopen("data.txt", "r", stdin);
     double *matrix[N];
     int row, col, i, j, k;
 
@@ -161,28 +161,25 @@ void gradientDescent()
     double cost = cost_function(matrix, V, row, col);
     double initial_cost = cost;
     double prev_cost = 0;
-
+    printf("Updating costs:\n ");
     while (cost > 0.05)
     {
 
         if ((counter % 2) == 0)
         {
             update_H(W, H, matrix, row, k, col);
-            cout << "New H:" << endl;
-            print_matrix(H, k, col);
+            cout << "New H" << endl;
         }
         else
         {
             update_W(W, H, matrix, row, k, col);
-            cout << "New W: " << endl;
-            print_matrix(W, row, k);
+            cout << "New W" << endl;
         }
         counter++;
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
         if (fabs(prev_cost - cost) <= EPSILON)
         {
-            printf("\nCost=%lf\n", fabs(prev_cost - cost));
             printf("Reached relative minima\n");
             break;
         }
@@ -193,11 +190,10 @@ void gradientDescent()
 
         // local minima reached need to stop by calculating difference with previous error
     }
+    printf("Factorization done!");
+    freopen("result.txt", "w", stdout);
     printf("The beginning cost was: %lf\n", initial_cost);
     printf("Total number of iterations before arriving at result: %d\n", counter);
-    printf("Final result:\n ");
-    printf("The main matrix:\n ");
-    print_matrix(matrix, row, col);
     printf("The broken down matrix:\n ");
     print_two_matrix(W, H, row, k, col);
 }
@@ -229,7 +225,7 @@ void gradientDescent(double **matrix, double **A, double **B, int row, int col, 
     double cost = cost_function(matrix, V, row, col);
     double initial_cost = cost;
     double prev_cost = 0;
-
+    printf("Updating costs:\n ");
     while (cost > 0.05)
     {
 
@@ -246,7 +242,6 @@ void gradientDescent(double **matrix, double **A, double **B, int row, int col, 
         cost = cost_function(matrix, V, row, col);
         if (fabs(prev_cost - cost) <= EPSILON)
         {
-            printf("\nCost=%lf\n", fabs(prev_cost - cost));
             printf("Reached relative minima\n");
             break;
         }
@@ -258,4 +253,10 @@ void gradientDescent(double **matrix, double **A, double **B, int row, int col, 
         // local minima reached need to stop by calculating difference with previous error
     }
     printf("Factorization done!\n");
+    freopen("result.txt", "w", stdin);
+    printf("The beginning cost was: %lf\n", initial_cost);
+    printf("Total number of iterations before arriving at result: %d\n", counter);
+    printf("Final result:\n ");
+    printf("The broken down matrix:\n ");
+    print_two_matrix(A, B, row, k, col);
 }

@@ -52,7 +52,7 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
-    strassenMultiplication(denominator, denominator_p_1, U, col, row, k);
+    multiply(denominator, denominator_p_1, U, col, row, k);
     // print_matrix(denominator, col, k);
     double *second_part[col];
     for (int i = 0; i < col; i++)
@@ -68,10 +68,10 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
         new_transpose_V[i] = (double *)malloc(k * sizeof(double));
     }
     multiply_element_wise(new_transpose_V, transpose_V, second_part, col, k);
-    print_matrix(new_transpose_V, col, k);
+    // print_matrix(new_transpose_V, col, k);
 
     transpose(new_transpose_V, V, col, k);
-    print_matrix(V, k, col);
+    // print_matrix(V, k, col);
 }
 void M_step_U_update(double **Y, double **U, double **V, double **X, double **W, int row, int k, int col)
 {
@@ -85,7 +85,7 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
     {
         numerator[i] = (double *)malloc(k * sizeof(double));
     }
-    strassenMultiplication(numerator, Y, transpose_V, row, col, k);
+    multiply(numerator, Y, transpose_V, row, col, k);
     // print_matrix(numerator, row, k);
 
     double *denominator_p_1[row], *denominator[row];
@@ -104,7 +104,7 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
     free_matrix(transpose_V, col);
     free_matrix(denominator_p_1, row);
 
-    print_matrix(denominator, row, k);
+    // print_matrix(denominator, row, k);
 
     double *second_part[row];
 
@@ -197,7 +197,7 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
 
 void weightedMatrix()
 {
-    freopen("in2.txt", "r", stdin);
+    freopen("wnmf1.txt", "r", stdin);
     double *matrix[N];
     int row, col;
 
@@ -236,7 +236,7 @@ void weightedMatrix()
         }
     }
     cout << "Weighted matrix: " << endl;
-    // print_matrix(weighted_matrix, row, col);
+    printf("Updating costs:\n ");
 
     // adding standard epsilon value to weighted matrix
     for (int i = 0; i < row; i++)
@@ -292,20 +292,17 @@ void weightedMatrix()
     double cost = cost_function(matrix, V, row, col);
     double starting_cost = cost;
     double prev_cost = 0.0;
+    printf("Updating costs:\n ");
     while (cost > 0.05)
     {
 
         if ((counter % 2) == 0)
         {
             M_step_U_update(Y, W, H, matrix, weighted_matrix, row, k, col);
-            cout << "New H:" << endl;
-            print_matrix(H, k, col);
         }
         else
         {
             M_step_V_update(Y, W, H, matrix, weighted_matrix, row, k, col);
-            cout << "New W: " << endl;
-            print_matrix(W, row, k);
         }
         counter++;
         multiply(V, W, H, row, k, col);
@@ -313,7 +310,6 @@ void weightedMatrix()
         // local minima reached need to stop by calculating difference with previous error
         if (fabs(prev_cost - cost) <= EPSILON)
         {
-            printf("%lf\n", cost);
             printf("Reached relative minima\n");
             break;
         }
@@ -322,6 +318,7 @@ void weightedMatrix()
             prev_cost = cost;
         }
     }
+    freopen("result2.txt", "w", stdout);
     printf("The beginning cost was: %lf\n", starting_cost);
     printf("Total number of iterations before arriving at result: %d\n", counter);
     printf("Final results:\n ");

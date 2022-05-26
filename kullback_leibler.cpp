@@ -37,7 +37,7 @@ void update_H_kullback(double **W, double **H, double **V, int row, int k, int c
     // cout << "V by WH";
     // print_matrix(V_by_WH, row, col);
     //   Clearing WH
-    free_matrix(WH, row);
+    // free_matrix(WH, row);
 
     // WT*(V/WH)
     double *numerator[k];
@@ -47,7 +47,7 @@ void update_H_kullback(double **W, double **H, double **V, int row, int k, int c
     }
     multiply(numerator, transpose_W, V_by_WH, k, row, col);
 
-    free_matrix(V_by_WH, row);
+    // free_matrix(V_by_WH, row);
 
     // Row summation of WT i.e column summation of W
     double *row_one_matrix[row]; // Matrix of 1 with 1 column
@@ -64,7 +64,7 @@ void update_H_kullback(double **W, double **H, double **V, int row, int k, int c
     multiply(denominator, transpose_W, row_one_matrix, k, row, 1); // k* row and row* 1 dimension
     // print_matrix(denominator, k, 1);
 
-    free_matrix(row_one_matrix, row);
+    // free_matrix(row_one_matrix, row);
 
     double *new_H[k];
     for (int i = 0; i < k; i++)
@@ -89,8 +89,8 @@ void update_H_kullback(double **W, double **H, double **V, int row, int k, int c
     multiply_element_wise(updated_H, H, new_H, k, col);
     // print_matrix(updated_H, k, col);
     copy_matrix(updated_H, H, k, col);
-    free_matrix(updated_H, k);
-    free_matrix(new_H, k);
+    // free_matrix(updated_H, k);
+    // free_matrix(new_H, k);
 }
 void update_W_kullback(double **W, double **H, double **V, int row, int k, int col)
 {
@@ -109,7 +109,7 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
 
     divide_element_wise(V_by_WH, V, WH, row, col);
 
-    free_matrix(WH, row);
+    // free_matrix(WH, row);
 
     double *transpose_H[col];
     for (int i = 0; i < col; i++)
@@ -130,7 +130,7 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
 
     multiply(numerator, V_by_WH, transpose_H, row, col, k);
     // print_matrix(numerator, row, k);
-    free_matrix(V_by_WH, col);
+    // free_matrix(V_by_WH, col);
 
     double *col_one_matrix[1];
 
@@ -176,13 +176,13 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
     }
     multiply_element_wise(updated_W, W, new_W, row, k);
     copy_matrix(updated_W, W, row, k);
-    free_matrix(updated_W, row);
-    free_matrix(new_W, row);
+    // free_matrix(updated_W, row);
+    // free_matrix(new_W, row);
 }
 
 void kullbackLeibler()
 {
-    freopen("in5.txt", "r", stdin);
+    freopen("data.txt", "r", stdin);
     double *matrix[N];
     int row, col, i, j, k;
 
@@ -254,20 +254,17 @@ void kullbackLeibler()
         {
             update_H_kullback(W, H, matrix, row, k, col);
             cout << "New H:" << endl;
-            print_matrix(H, k, col);
         }
         else
         {
             update_W_kullback(W, H, matrix, row, k, col);
             cout << "New W: " << endl;
-            print_matrix(W, row, k);
         }
         counter++;
         multiply(V, W, H, row, k, col);
         cost = cost_function(matrix, V, row, col);
         if (fabs(prev_cost - cost) <= EPSILON)
         {
-            printf("\n%lf\n", fabs(prev_cost - cost));
             printf("Reached relative minima\n");
             break;
         }
@@ -276,6 +273,7 @@ void kullbackLeibler()
             prev_cost = cost;
         }
     }
+    freopen("result.txt", "w", stdout);
     printf("The beginning cost was: %lf\n", initial_cost);
     printf("Number of iterations: %d\n", counter);
     printf("The main matrix:\n ");
