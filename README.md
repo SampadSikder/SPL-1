@@ -19,4 +19,5 @@ Using Frobenius norm we calculate the error. If the error is above a certain thr
 11. E-WNMF 
 12. Trying strassen's multiplication algorithm
 
-
+Challenges: Malloc
+Freeing memory in Ubuntu gives permission error
