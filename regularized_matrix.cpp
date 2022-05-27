@@ -26,7 +26,7 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
     }
     multiply(numerator, numerator_p_1, transpose_V, row, col, k);
     // print_matrix(numerator, row, k);
-    free_matrix(numerator_p_1, row);
+
     double *UV[row];
     for (int i = 0; i < row; i++)
     {
@@ -40,15 +40,15 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
         denominator_p_1[i] = (double *)malloc(col * sizeof(double));
     }
     multiply_element_wise(denominator_p_1, W, UV, row, col);
-    free_matrix(UV, row);
+
     // print_matrix(denominator_p_1, row, col);
     double *denominator[row];
     for (int i = 0; i < row; i++)
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
-    strassenMultiplication(denominator, denominator_p_1, transpose_V, row, col, k);
-    free_matrix(denominator_p_1, row);
+    multiply(denominator, denominator_p_1, transpose_V, row, col, k);
+
     // print_matrix(denominator, row, k);
 
     double *second_part[row];
@@ -58,8 +58,6 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
     }
     divide_element_wise(second_part, numerator, denominator, row, k);
     // print_matrix(second_part, row, k);
-    free_matrix(numerator, row);
-    free_matrix(denominator, row);
 
     double *Updated_U[row];
     for (int i = 0; i < row; i++)
@@ -69,7 +67,6 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
     multiply_element_wise(Updated_U, U, second_part, row, k);
     // print_matrix(Updated_U, row, k);
     copy_matrix(Updated_U, U, row, k);
-    free_matrix(Updated_U, row);
 }
 void Update_V(double **X, double **W, double **U, double **V, int row, int k, int col)
 {
@@ -92,7 +89,7 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
         numerator_p_1[i] = (double *)malloc(row * sizeof(double));
     }
     multiply_element_wise(numerator_p_1, transpose_W, transpose_X, col, row);
-    free_matrix(transpose_X, col);
+
     // print_matrix(numerator_p_1, col, row);
     double *numerator[col];
     for (int i = 0; i < col; i++)
@@ -100,7 +97,7 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
         numerator[i] = (double *)malloc(k * sizeof(double));
     }
     multiply(numerator, numerator_p_1, U, col, row, k);
-    free_matrix(numerator_p_1, col);
+
     // print_matrix(numerator, col, k);
     double *transpose_V[col];
     for (int i = 0; i < col; i++)
@@ -123,7 +120,6 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
     }
     multiply(VUT, transpose_V, transpose_U, col, k, row);
     // print_matrix(VUT, col, row);
-    free_matrix(transpose_U, k);
 
     double *denominator_p_1[col];
     for (int i = 0; i < col; i++)
@@ -131,15 +127,15 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
         denominator_p_1[i] = (double *)malloc(row * sizeof(double));
     }
     multiply_element_wise(denominator_p_1, transpose_W, VUT, col, row);
-    free_matrix(VUT, col);
+
     // print_matrix(denominator_p_1, col, row);
     double *denominator[col];
     for (int i = 0; i < col; i++)
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
-    strassenMultiplication(denominator, denominator_p_1, U, col, row, k);
-    free_matrix(denominator_p_1, col);
+    multiply(denominator, denominator_p_1, U, col, row, k);
+
     // print_matrix(denominator, col, k);
 
     double *second_part[col];
@@ -148,8 +144,7 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
         second_part[i] = (double *)malloc(k * sizeof(double));
     }
     divide_element_wise(second_part, numerator, denominator, col, k);
-    free_matrix(numerator, col);
-    free_matrix(denominator, col);
+
     // print_matrix(second_part, col, k);
     double *Updated_VTranspose[col];
     for (int i = 0; i < col; i++)
@@ -166,7 +161,6 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
     transpose(Updated_VTranspose, Updated_V, col, k);
     // print_matrix(Updated_V, k, col);
     copy_matrix(Updated_V, V, k, col);
-    free_matrix(Updated_V, k);
 }
 void regularizedMatrix()
 {
@@ -295,6 +289,7 @@ void regularizedMatrix()
 
         // local minima reached need to stop by calculating difference with previous error
     }
+    printf("Factorization done!");
     freopen("result2.txt", "w", stdout);
     printf("The beginning cost was: %lf\n", starting_cost);
     printf("Total number of iterations before arriving at result: %d\n", counter);

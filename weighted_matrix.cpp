@@ -20,7 +20,6 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
         numerator[i] = (double *)malloc(k * sizeof(double));
     }
     multiply(numerator, transpose_Y, U, col, row, k);
-    free_matrix(transpose_Y, col);
 
     // print_matrix(numerator, col, k);
 
@@ -43,7 +42,6 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
         denominator_p_1[i] = (double *)malloc(row * sizeof(double));
     }
     multiply(denominator_p_1, transpose_V, transpose_U, col, k, row);
-    free_matrix(transpose_U, k);
 
     // print_matrix(denominator_p_1, col, row);
 
@@ -100,9 +98,7 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
-    strassenMultiplication(denominator, denominator_p_1, transpose_V, row, col, k);
-    free_matrix(transpose_V, col);
-    free_matrix(denominator_p_1, row);
+    multiply(denominator, denominator_p_1, transpose_V, row, col, k);
 
     // print_matrix(denominator, row, k);
 
@@ -151,7 +147,6 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
             one_minus_weight[i][j] = one_matrix[i][j] - W[i][j];
         }
     }
-    free_matrix(one_matrix, row);
 
     double *UVT[row];
 
@@ -171,9 +166,6 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
     }
 
     multiply_element_wise(second_part, one_minus_weight, UVT, row, col);
-
-    free_matrix(one_minus_weight, row);
-    free_matrix(UVT, row);
 
     // print_matrix(second_part, row, col);
 
@@ -318,6 +310,7 @@ void weightedMatrix()
             prev_cost = cost;
         }
     }
+    printf("Factorization done!");
     freopen("result2.txt", "w", stdout);
     printf("The beginning cost was: %lf\n", starting_cost);
     printf("Total number of iterations before arriving at result: %d\n", counter);

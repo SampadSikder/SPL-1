@@ -1,7 +1,7 @@
 #pragma once
 #define STANDARD_EPSILON 2.2204460492503130808472633361816E-16
 #define EPSILON 1e-9
-const int N = 1000;
+const int N = 10000;
 
 void multiply(double **V, double **m1, double **m2, int m, int k, int n);
 void divide_element_wise(double **V, double **m1, double **m2, int m, int n);
@@ -19,3 +19,4 @@ void row_summation(double **matrix, int row, int col);
 void column_summation(double **matrix, int row, int col);
 void free_matrix(double **matrix, int row);
 void strassenMultiplication(double **V, double **m1, double **m2, int m, int k, int n);
+double trace(double **matrix, int index);
