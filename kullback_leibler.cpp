@@ -182,15 +182,23 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
 
 void kullbackLeibler()
 {
-    freopen("data.txt", "r", stdin);
     double *matrix[N];
     int row, col, i, j, k;
+    printf("1. Manual input\n");
+    printf("2. Text file input\n");
+    int choice;
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    if (choice == 2)
+    {
+        freopen("data.txt", "r", stdin);
+    }
 
     printf("Enter number of rows and cols: ");
     // Taking input
     cin >> row >> col; // m*n matrix
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         matrix[i] = (double *)malloc(col * sizeof(double));
 
     printf("Enter matrix: ");
@@ -212,9 +220,9 @@ void kullbackLeibler()
     printf("Matrix broken and initialized using Gaussian dist: ");
     double *W[row], *H[k]; // broken down in m*k and k*n matrix
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         W[i] = (double *)malloc(k * sizeof(double));
-    for (int i = 0; i < k; i++)
+    for (i = 0; i < k; i++)
         H[i] = (double *)malloc(col * sizeof(double));
 
     for (i = 0; i < row; i++)
@@ -247,7 +255,7 @@ void kullbackLeibler()
     double cost = cost_function(matrix, V, row, col);
     double initial_cost = cost;
     double prev_cost = 0;
-    while (cost > 0.05)
+    while (cost > EPSILON)
     {
 
         if ((counter % 2) == 0)
@@ -275,9 +283,8 @@ void kullbackLeibler()
     }
     freopen("result.txt", "w", stdout);
     printf("The beginning cost was: %lf\n", initial_cost);
-    printf("Number of iterations: %d\n", counter);
-    printf("The main matrix:\n ");
-    print_matrix(matrix, row, col);
-    printf("The broken down matrices:\n ");
+    printf("The final cost was: %lf\n", cost);
+    printf("Total number of iterations before arriving at result: %d\n", counter);
+    printf("The broken down matrix:\n ");
     print_two_matrix(W, H, row, k, col);
 }

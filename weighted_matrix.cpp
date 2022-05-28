@@ -189,19 +189,27 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
 
 void weightedMatrix()
 {
-    freopen("wnmf1.txt", "r", stdin);
     double *matrix[N];
-    int row, col;
+    int row, col, i, j, k;
+    printf("1. Manual input\n");
+    printf("2. Text file input\n");
+    int choice;
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    if (choice == 2)
+    {
+        freopen("data.txt", "r", stdin);
+    }
 
     cout << "Enter number of rows and columns" << endl;
     cin >> row >> col;
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         matrix[i] = (double *)malloc(col * sizeof(double));
 
     cout << "Enter the matrix" << endl;
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
     {
         for (int j = 0; j < col; j++)
         {
@@ -210,12 +218,12 @@ void weightedMatrix()
     }
     double *weighted_matrix[N];
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         weighted_matrix[i] = (double *)malloc(col * sizeof(double));
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
     {
-        for (int j = 0; j < col; j++)
+        for (j = 0; j < col; j++)
         {
             if (matrix[i][j] == -1)
             {
@@ -231,9 +239,9 @@ void weightedMatrix()
     printf("Updating costs:\n ");
 
     // adding standard epsilon value to weighted matrix
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
     {
-        for (int j = 0; j < col; j++)
+        for (j = 0; j < col; j++)
         {
             if (matrix[i][j] == -1)
             {
@@ -242,32 +250,31 @@ void weightedMatrix()
         }
     }
     normalize(matrix, row, col);
-    int k;
     printf("Enter the dimension: ");
     cin >> k;
     // filled in matrix calculation
     double *Y[N], *W[row], *H[col], *V[row];
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         W[i] = (double *)malloc(k * sizeof(double));
-    for (int i = 0; i < k; i++)
+    for (i = 0; i < k; i++)
         H[i] = (double *)malloc(col * sizeof(double));
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         Y[i] = (double *)malloc(col * sizeof(double));
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         V[i] = (double *)malloc(col * sizeof(double));
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
     {
-        for (int j = 0; j < k; j++)
+        for (j = 0; j < k; j++)
         {
             W[i][j] = Rand_number_generator(); // send to random number generator
         }
     }
 
-    for (int i = 0; i < k; i++)
+    for (i = 0; i < k; i++)
     {
-        for (int j = 0; j < col; j++)
+        for (j = 0; j < col; j++)
         {
             H[i][j] = Rand_number_generator(); // send to random number generator
         }
@@ -285,7 +292,7 @@ void weightedMatrix()
     double starting_cost = cost;
     double prev_cost = 0.0;
     printf("Updating costs:\n ");
-    while (cost > 0.05)
+    while (cost > EPSILON)
     {
 
         if ((counter % 2) == 0)
@@ -313,12 +320,8 @@ void weightedMatrix()
     printf("Factorization done!");
     freopen("result2.txt", "w", stdout);
     printf("The beginning cost was: %lf\n", starting_cost);
+    printf("The final cost was: %lf\n", cost);
     printf("Total number of iterations before arriving at result: %d\n", counter);
-    printf("Final results:\n ");
-    printf("The main matrix:\n ");
-    print_matrix(matrix, row, col);
-    printf("The W matrix:\n ");
-    print_matrix(W, row, k);
-    printf("The H matrix:\n ");
-    print_matrix(H, k, col);
+    printf("The broken down matrix:\n ");
+    print_two_matrix(W, H, row, k, col);
 }

@@ -39,8 +39,4 @@ int main()
     case 6:
         break;
     }
-    // kullbackLeibler();
-    //  regularizedMatrix();
-    //  weightedMatrix();
-    //   gradientDescent();
 }

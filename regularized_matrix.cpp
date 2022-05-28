@@ -47,7 +47,7 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
-    strassenMultiplication(denominator, denominator_p_1, transpose_V, row, col, k);
+    multiply(denominator, denominator_p_1, transpose_V, row, col, k);
 
     // print_matrix(denominator, row, k);
 
@@ -111,8 +111,7 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
         transpose_U[i] = (double *)malloc(row * sizeof(double));
     }
     transpose(U, transpose_U, row, k);
-    // print_matrix(transpose_V, col, k);
-    // print_matrix(transpose_U, k, row);
+
     double *VUT[col];
     for (int i = 0; i < col; i++)
     {
@@ -134,7 +133,7 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
-    strassenMultiplication(denominator, denominator_p_1, U, col, row, k);
+    multiply(denominator, denominator_p_1, U, col, row, k);
 
     // print_matrix(denominator, col, k);
 
@@ -159,38 +158,45 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
         Updated_V[i] = (double *)malloc(col * sizeof(double));
     }
     transpose(Updated_VTranspose, Updated_V, col, k);
-    // print_matrix(Updated_V, k, col);
     copy_matrix(Updated_V, V, k, col);
 }
 void regularizedMatrix()
 {
-    freopen("wnmf2.txt", "r", stdin);
     double *matrix[N];
-    int row, col;
+    int row, col, i, j, k;
+    printf("1. Manual input\n");
+    printf("2. Text file input\n");
+    int choice;
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    if (choice == 2)
+    {
+        freopen("data.txt", "r", stdin);
+    }
 
     cout << "Enter number of rows and columns" << endl;
     cin >> row >> col;
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         matrix[i] = (double *)malloc(col * sizeof(double));
 
     cout << "Enter the matrix" << endl;
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
     {
-        for (int j = 0; j < col; j++)
+        for (j = 0; j < col; j++)
         {
             cin >> matrix[i][j];
         }
     }
     double *weighted_matrix[N];
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         weighted_matrix[i] = (double *)malloc(col * sizeof(double));
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
     {
-        for (int j = 0; j < col; j++)
+        for (j = 0; j < col; j++)
         {
             if (matrix[i][j] == -1)
             {
@@ -202,49 +208,52 @@ void regularizedMatrix()
             }
         }
     }
-    cout << "Weighted matrix: " << endl;
-    // print_matrix(weighted_matrix, row, col);
+    // cout << "Weighted matrix: " << endl;
+    //  print_matrix(weighted_matrix, row, col);
     cout << "Enter user defined Lambda value: (Between 0 and 1)" << endl;
     double lambda;
     cin >> lambda;
     // adding standard epsilon value to weighted matrix
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
     {
-        for (int j = 0; j < col; j++)
+        for (j = 0; j < col; j++)
         {
             if (matrix[i][j] == -1)
             {
                 matrix[i][j] = lambda;
             }
+            else
+            {
+                matrix[i][j] += lambda;
+            }
         }
     }
     normalize(matrix, row, col);
-    int k;
     printf("Enter the dimension:\n");
     cin >> k;
     // filled in matrix calculation
     double *Y[N], *W[row], *H[col], *V[row];
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         W[i] = (double *)malloc(k * sizeof(double));
-    for (int i = 0; i < k; i++)
+    for (i = 0; i < k; i++)
         H[i] = (double *)malloc(col * sizeof(double));
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         Y[i] = (double *)malloc(col * sizeof(double));
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         V[i] = (double *)malloc(col * sizeof(double));
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
     {
-        for (int j = 0; j < k; j++)
+        for (j = 0; j < k; j++)
         {
             W[i][j] = Rand_number_generator(); // send to random number generator
         }
     }
 
-    for (int i = 0; i < k; i++)
+    for (i = 0; i < k; i++)
     {
-        for (int j = 0; j < col; j++)
+        for (j = 0; j < col; j++)
         {
             H[i][j] = Rand_number_generator(); // send to random number generator
         }
@@ -261,7 +270,7 @@ void regularizedMatrix()
     double cost = cost_function(matrix, V, row, col);
     double starting_cost = cost;
     double prev_cost = 0.0;
-    while (cost > 0.05)
+    while (cost > EPSILON)
     {
 
         if ((counter % 2) != 0)
@@ -291,13 +300,9 @@ void regularizedMatrix()
     }
     printf("Factorization done!");
     freopen("result2.txt", "w", stdout);
-    printf("The beginning cost was: %lf\n", starting_cost);
+    printf("The beginning cost was: %lf\n", prev_cost);
+    printf("The final cost was: %lf\n", cost);
     printf("Total number of iterations before arriving at result: %d\n", counter);
-    printf("Final results:\n ");
-    printf("The main matrix:\n ");
-    print_matrix(matrix, row, col);
-    printf("The W matrix:\n ");
-    print_matrix(W, row, k);
-    printf("The H matrix:\n ");
-    print_matrix(H, k, col);
+    printf("The broken down matrix:\n ");
+    print_two_matrix(W, H, row, k, col);
 }

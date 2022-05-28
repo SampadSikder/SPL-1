@@ -92,15 +92,23 @@ void update_W(double **W, double **H, double **V, int row, int k, int col)
 
 void gradientDescent()
 {
-    freopen("data.txt", "r", stdin);
     double *matrix[N];
     int row, col, i, j, k;
+    printf("1. Manual input\n");
+    printf("2. Text file input\n");
+    int choice;
+    printf("Enter your choice: ");
+    scanf("%d", &choice);
+    if (choice == 2)
+    {
+        freopen("data.txt", "r", stdin);
+    }
 
     printf("Enter number of rows and cols: ");
     // Taking input
     cin >> row >> col; // m*n matrix
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         matrix[i] = (double *)malloc(col * sizeof(double));
 
     printf("Enter matrix: ");
@@ -122,9 +130,9 @@ void gradientDescent()
     printf("Matrix broken and initialized using Gaussian dist: ");
     double *W[N], *H[N]; // broken down in m*k and k*n matrix
 
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         W[i] = (double *)malloc(k * sizeof(double));
-    for (int i = 0; i < k; i++)
+    for (i = 0; i < k; i++)
         H[i] = (double *)malloc(col * sizeof(double));
 
     for (i = 0; i < row; i++)
@@ -147,7 +155,7 @@ void gradientDescent()
     print_two_matrix(W, H, row, k, col);
     // multiplication
     double *V[N];
-    for (int i = 0; i < row; i++)
+    for (i = 0; i < row; i++)
         V[i] = (double *)malloc(col * sizeof(double));
     multiply(V, W, H, row, k, col);
 
@@ -162,7 +170,7 @@ void gradientDescent()
     double initial_cost = cost;
     double prev_cost = 0;
     printf("Updating costs:\n ");
-    while (cost > 0.05)
+    while (cost > EPSILON)
     {
 
         if ((counter % 2) == 0)
@@ -193,11 +201,12 @@ void gradientDescent()
     printf("Factorization done!");
     freopen("result.txt", "w", stdout);
     printf("The beginning cost was: %lf\n", initial_cost);
+    printf("The final cost was: %lf\n", cost);
     printf("Total number of iterations before arriving at result: %d\n", counter);
     printf("The broken down matrix:\n ");
     print_two_matrix(W, H, row, k, col);
 }
-void gradientDescent(double **matrix, double **A, double **B, int row, int col, int k)
+void gradientDescent(double **matrix, double **A, double **B, int row, int k, int col)
 {
     int i, j;
     for (i = 0; i < row; i++)
@@ -222,6 +231,7 @@ void gradientDescent(double **matrix, double **A, double **B, int row, int col, 
     int counter = 1;
     printf("Initial cost:\n");
     // cost function
+    strassenMultiplication(V, A, B, row, k, col);
     double cost = cost_function(matrix, V, row, col);
     double initial_cost = cost;
     double prev_cost = 0;
@@ -253,10 +263,4 @@ void gradientDescent(double **matrix, double **A, double **B, int row, int col, 
         // local minima reached need to stop by calculating difference with previous error
     }
     printf("Factorization done!\n");
-    freopen("result.txt", "w", stdin);
-    printf("The beginning cost was: %lf\n", initial_cost);
-    printf("Total number of iterations before arriving at result: %d\n", counter);
-    printf("Final result:\n ");
-    printf("The broken down matrix:\n ");
-    print_two_matrix(A, B, row, k, col);
 }
