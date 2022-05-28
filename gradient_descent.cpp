@@ -92,7 +92,7 @@ void update_W(double **W, double **H, double **V, int row, int k, int col)
 
 void gradientDescent()
 {
-    freopen("data.txt", "r", stdin);
+    //freopen("data.txt", "r", stdin);
     double *matrix[N];
     int row, col, i, j, k;
 
@@ -222,6 +222,7 @@ void gradientDescent(double **matrix, double **A, double **B, int row, int col, 
     int counter = 1;
     printf("Initial cost:\n");
     // cost function
+    strassenMultiplication(V,A,B,row,k,col);
     double cost = cost_function(matrix, V, row, col);
     double initial_cost = cost;
     double prev_cost = 0;
@@ -253,10 +254,4 @@ void gradientDescent(double **matrix, double **A, double **B, int row, int col, 
         // local minima reached need to stop by calculating difference with previous error
     }
     printf("Factorization done!\n");
-    freopen("result.txt", "w", stdin);
-    printf("The beginning cost was: %lf\n", initial_cost);
-    printf("Total number of iterations before arriving at result: %d\n", counter);
-    printf("Final result:\n ");
-    printf("The broken down matrix:\n ");
-    print_two_matrix(A, B, row, k, col);
 }

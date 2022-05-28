@@ -202,7 +202,7 @@ void regularizedMatrix()
             }
         }
     }
-    cout << "Weighted matrix: " << endl;
+    //cout << "Weighted matrix: " << endl;
     // print_matrix(weighted_matrix, row, col);
     cout << "Enter user defined Lambda value: (Between 0 and 1)" << endl;
     double lambda;
@@ -215,6 +215,9 @@ void regularizedMatrix()
             if (matrix[i][j] == -1)
             {
                 matrix[i][j] = lambda;
+            }
+            else{
+                matrix[i][j]+=lambda;
             }
         }
     }

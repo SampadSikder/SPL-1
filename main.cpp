@@ -9,10 +9,12 @@ int main()
     printf("3. Matrix factorization using Weighted matrix without regularization\n");
     printf("4. Matrix factorization using Weighted matrix with regularization\n");
     printf("5. Derivative of a matrix\n");
+    printf("6. Exit\n");
     int choice;
-    printf("Enter your choice: ");
+    while(1){
+    printf("\nEnter your choice: ");
     scanf("%d", &choice);
-
+    if(choice>=1 && choice <=5){
     switch (choice)
     {
     case 1:
@@ -36,11 +38,11 @@ int main()
         printf("You have chosen Derivative of a matrix\n");
         derivative();
         break;
-    case 6:
-        break;
     }
-    // kullbackLeibler();
-    //  regularizedMatrix();
-    //  weightedMatrix();
-    //   gradientDescent();
+    }else if(choice==6){
+        break;
+    }else{
+        printf("\nPlease Enter correct choice\n");
+    }
+    }
 }
