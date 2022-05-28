@@ -47,7 +47,7 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
-    multiply(denominator, denominator_p_1, transpose_V, row, col, k);
+    strassenMultiplication(denominator, denominator_p_1, transpose_V, row, col, k);
 
     // print_matrix(denominator, row, k);
 
@@ -134,7 +134,7 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
-    multiply(denominator, denominator_p_1, U, col, row, k);
+    strassenMultiplication(denominator, denominator_p_1, U, col, row, k);
 
     // print_matrix(denominator, col, k);
 
