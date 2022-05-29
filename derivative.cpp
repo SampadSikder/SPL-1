@@ -38,7 +38,7 @@ void derivative()
     {
         H[i] = (double *)malloc(col * sizeof(double));
     }
-    gradientDescent(matrix, W, H, row, k, col);
+    gradientDescent(matrix, W, H, row, col, k);
 
     printf("Derivative of input matrix with respect to \n1. A matrix\t2. B Matrix\n");
 

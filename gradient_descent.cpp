@@ -240,7 +240,7 @@ void gradientDescent(double **matrix, double **A, double **B, int row, int k, in
     int counter = 1;
     printf("Initial cost:\n");
     // cost function
-    strassenMultiplication(V, A, B, row, k, col);
+    multiply(V, A, B, row, k, col);
     double cost = cost_function(matrix, V, row, col);
     double initial_cost = cost;
     double prev_cost = 0;
