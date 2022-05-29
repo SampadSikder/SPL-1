@@ -1,6 +1,6 @@
 #pragma once
 #define STANDARD_EPSILON 2.2204460492503130808472633361816E-16
-#define EPSILON 1e-9
+#define EPSILON 1e-4
 const int N = 10000;
 
 void multiply(double **V, double **m1, double **m2, int m, int k, int n);

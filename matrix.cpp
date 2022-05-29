@@ -166,5 +166,9 @@ double trace(double **matrix, int index)
 }
 void free_matrix(double **matrix, int row)
 {
-    delete[] matrix;
+    for (int i = 0; i < row; i++)
+    {
+        free(matrix[i]);
+    }
+    free(matrix);
 }

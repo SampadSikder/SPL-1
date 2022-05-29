@@ -11,36 +11,33 @@ int main()
     printf("5. Derivative of a matrix\n");
     printf("6. Exit\n");
     int choice;
-    while (1)
+    printf("\nEnter your choice: ");
+    scanf("%d", &choice);
+    if (choice >= 1 && choice <= 5)
     {
-        printf("\nEnter your choice: ");
-        scanf("%d", &choice);
-        if (choice >= 1 && choice <= 5)
+        switch (choice)
         {
-            switch (choice)
-            {
-            case 1:
-                printf("You have chosen Gradient descent\n");
-                gradientDescent();
-                break;
-            case 2:
-                printf("You have chosen Kullback-Leibler divergence\n");
-                kullbackLeibler();
-                break;
-            case 3:
-                printf("You have chosen Weighted matrix without regularization\n");
-                weightedMatrix();
-                break;
-            case 4:
-                printf("You have chosen Weighted matrix with regularization\n");
-                regularizedMatrix();
-                break;
+        case 1:
+            printf("You have chosen Gradient descent\n");
+            gradientDescent();
+            break;
+        case 2:
+            printf("You have chosen Kullback-Leibler divergence\n");
+            kullbackLeibler();
+            break;
+        case 3:
+            printf("You have chosen Weighted matrix without regularization\n");
+            weightedMatrix();
+            break;
+        case 4:
+            printf("You have chosen Weighted matrix with regularization\n");
+            regularizedMatrix();
+            break;
 
-            case 5:
-                printf("You have chosen Derivative of a matrix\n");
-                derivative();
-                break;
-            }
+        case 5:
+            printf("You have chosen Derivative of a matrix\n");
+            derivative();
+            break;
         }
     }
 }

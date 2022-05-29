@@ -91,7 +91,11 @@ void update_H_kullback(double **W, double **H, double **V, int row, int k, int c
     copy_matrix(updated_H, H, k, col);
     free_matrix(updated_H, k);
     free_matrix(new_H, k);
+    /* free_matrix(denominator, k);
+    free_matrix(numerator, k);
+    free_matrix(V_by_WH, row);
     free_matrix(WH, row);
+    */
 }
 void update_W_kullback(double **W, double **H, double **V, int row, int k, int col)
 {
@@ -179,7 +183,9 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
     copy_matrix(updated_W, W, row, k);
     free_matrix(updated_W, row);
     free_matrix(new_W, row);
-    free_matrix(WH, row);
+    /*free_matrix(numerator, row);
+    free_matrix(V_by_WH, row);
+    free_matrix(WH, row);*/
 }
 
 void kullbackLeibler()
