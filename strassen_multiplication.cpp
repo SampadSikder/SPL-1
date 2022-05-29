@@ -39,7 +39,6 @@ void strassen(double **A, double **B, double **C, int n)
     }
     else
     {
-        // cout << "Recursive calls" << endl;
         int divide = (n / 2);
         double *A11[divide], *A12[divide], *A21[divide], *A22[divide];
         double *B11[divide], *B12[divide], *B21[divide], *B22[divide];
@@ -76,7 +75,6 @@ void strassen(double **A, double **B, double **C, int n)
         {
             for (int j = 0; j < divide; j++)
             {
-                // cout << "assigning" << endl;
                 A11[i][j] = A[i][j];
                 A12[i][j] = A[i][j + divide];
                 A21[i][j] = A[i + divide][j];
@@ -125,8 +123,6 @@ void strassen(double **A, double **B, double **C, int n)
         MatrixAdd(AResult, P6, BResult, divide);  // p1 + p3 + p6
         MatrixSubtract(BResult, P2, C22, divide); // c22 = p1 + p3 - p2 + p6
 
-        // Grouping the results obtained in a single matrice:
-
         for (int i = 0; i < divide; i++)
         {
             for (int j = 0; j < divide; j++)
@@ -153,18 +149,14 @@ void print_matrix(double V[][N], int m, int n)
 }
 void strassenMultiplication(double **V, double **m1, double **m2, int row, int k, int col)
 {
-    // print_matrix(mat1, row, k);
-    // print_matrix(mat2, k, col);
 
     // creating square matrices of order 2^n for all and initializing empty cells with 0
     // maximum of row,k,col
     int max_dm, temp, i, j;
     temp = max_of_two(row, k);
     max_dm = max_of_two(temp, col);
-    // cout << max_dm;
+    
     int m = (int)pow(2, max_dm);
-    // cout << m;
-
     double *mat1_updated[m], *mat2_updated[m], *result[m];
     for (i = 0; i < m; i++)
     {
@@ -179,7 +171,6 @@ void strassenMultiplication(double **V, double **m1, double **m2, int row, int k
     {
         for (j = 0; j < m; j++)
         {
-            // cout << "hello";
             mat1_updated[i][j] = 0.0;
         }
     }
@@ -188,7 +179,6 @@ void strassenMultiplication(double **V, double **m1, double **m2, int row, int k
     {
         for (j = 0; j < m; j++)
         {
-            // cout << "hello";
             mat2_updated[i][j] = 0.0;
         }
     }
@@ -212,8 +202,6 @@ void strassenMultiplication(double **V, double **m1, double **m2, int row, int k
             mat2_updated[i][j] = m2[i][j];
         }
     }
-    // print_matrix(mat1_updated, m, m);
-    // print_matrix(mat2_updated, m, m);
 
     strassen(mat1_updated, mat2_updated, result, m);
 

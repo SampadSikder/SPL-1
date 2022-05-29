@@ -21,8 +21,6 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
     }
     multiply(numerator, transpose_Y, U, col, row, k);
 
-    // print_matrix(numerator, col, k);
-
     double *transpose_V[col], *transpose_U[k];
 
     for (int i = 0; i < col; i++)
@@ -43,30 +41,26 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
     }
     multiply(denominator_p_1, transpose_V, transpose_U, col, k, row);
 
-    // print_matrix(denominator_p_1, col, row);
-
     double *denominator[col];
     for (int i = 0; i < col; i++)
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
     multiply(denominator, denominator_p_1, U, col, row, k);
-    // print_matrix(denominator, col, k);
+   
     double *second_part[col];
     for (int i = 0; i < col; i++)
     {
         second_part[i] = (double *)malloc(k * sizeof(double));
     }
     divide_element_wise(second_part, numerator, denominator, col, k);
-    // print_matrix(second_part, col, k);
-
+    
     double *new_transpose_V[col];
     for (int i = 0; i < col; i++)
     {
         new_transpose_V[i] = (double *)malloc(k * sizeof(double));
     }
     multiply_element_wise(new_transpose_V, transpose_V, second_part, col, k);
-    // print_matrix(new_transpose_V, col, k);
 
     transpose(new_transpose_V, V, col, k);
     free_matrix(transpose_Y, col);
@@ -76,7 +70,6 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
     free_matrix(second_part, col);
     free_matrix(new_transpose_V, col);
     free_matrix(transpose_V, col);
-    // print_matrix(V, k, col);
 }
 void M_step_U_update(double **Y, double **U, double **V, double **X, double **W, int row, int k, int col)
 {
@@ -91,7 +84,6 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
         numerator[i] = (double *)malloc(k * sizeof(double));
     }
     multiply(numerator, Y, transpose_V, row, col, k);
-    // print_matrix(numerator, row, k);
 
     double *denominator_p_1[row], *denominator[row];
 
@@ -107,8 +99,6 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
     }
     multiply(denominator, denominator_p_1, transpose_V, row, col, k);
 
-    // print_matrix(denominator, row, k);
-
     double *second_part[row];
 
     for (int i = 0; i < row; i++)
@@ -116,7 +106,6 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
         second_part[i] = (double *)malloc(k * sizeof(double));
     }
     divide_element_wise(second_part, numerator, denominator, row, k);
-    // print_matrix(second_part, row, k);
 
     double *new_U[row];
     for (int i = 0; i < row; i++)
@@ -130,8 +119,6 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
     free_matrix(denominator, row);
     free_matrix(denominator_p_1, row);
     free_matrix(numerator, row);
-
-    // print_matrix(U, row, k);
 }
 void E_step(double **Y, double **U, double **V, double **X, double **W, int row, int k, int col)
 {
@@ -169,7 +156,6 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
     }
 
     strassenMultiplication(UVT, U, V, row, k, col);
-    // print_matrix(UVT, row, col);
 
     double *second_part[row];
 
@@ -179,8 +165,6 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
     }
 
     multiply_element_wise(second_part, one_minus_weight, UVT, row, col);
-
-    // print_matrix(second_part, row, col);
 
     double *first_part[row];
 
@@ -301,7 +285,7 @@ void weightedMatrix()
     // E step if EM-WNMF
 
     E_step(Y, W, H, matrix, weighted_matrix, row, k, col);
-    // print_matrix(Y, row, col);
+    
     int counter = 1;
     printf("Initial cost: ");
     strassenMultiplication(V, W, H, row, k, col);

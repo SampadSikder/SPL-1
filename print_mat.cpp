@@ -26,20 +26,6 @@ void print_two_matrix(double **m1, double **m2, int m, int k, int n)
     }
     cout << endl;
 }
-
-// when we print a declared 2d array
-/*void print_matrix(double V[][N], int m, int n)
-{
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            printf("%lf\t", V[i][j]);
-        }
-        cout << endl;
-    }
-    cout << endl;
-}*/
 // when we print a declared 2d array
 void print_matrix(double **V, int m, int n)
 {

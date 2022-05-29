@@ -91,11 +91,11 @@ void update_H_kullback(double **W, double **H, double **V, int row, int k, int c
     copy_matrix(updated_H, H, k, col);
     free_matrix(updated_H, k);
     free_matrix(new_H, k);
-    /* free_matrix(denominator, k);
+    free_matrix(denominator, k);
     free_matrix(numerator, k);
     free_matrix(V_by_WH, row);
     free_matrix(WH, row);
-    */
+    
 }
 void update_W_kullback(double **W, double **H, double **V, int row, int k, int col)
 {
@@ -105,7 +105,7 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
         WH[i] = (double *)malloc(col * sizeof(double));
     }
     multiply(WH, W, H, row, k, col);
-    // print_matrix(WH, row, col);
+   
     double *V_by_WH[row];
     for (int i = 0; i < row; i++)
     {
@@ -113,8 +113,6 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
     }
 
     divide_element_wise(V_by_WH, V, WH, row, col);
-
-    // free_matrix(WH, row);
 
     double *transpose_H[col];
     for (int i = 0; i < col; i++)
@@ -124,8 +122,6 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
 
     transpose(H, transpose_H, k, col);
 
-    // divide_element_wise(V_by_WH, V, WH, row, col);
-
     double *numerator[row];
 
     for (int i = 0; i < row; i++)
@@ -134,9 +130,7 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
     }
 
     multiply(numerator, V_by_WH, transpose_H, row, col, k);
-    // print_matrix(numerator, row, k);
-    // free_matrix(V_by_WH, col);
-
+  
     double *col_one_matrix[1];
 
     col_one_matrix[0] = (double *)malloc(col * sizeof(double));
@@ -149,14 +143,11 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
         }
     }
 
-    // print_matrix(col_one_matrix, 1, col);
-
     double *denominator[1];
     denominator[0] = (double *)malloc(k * sizeof(double));
 
     multiply(denominator, col_one_matrix, transpose_H, 1, col, k);
 
-    // print_matrix(denominator, 1, k);
 
     double *new_W[row];
 
@@ -172,7 +163,6 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
             new_W[i][j] = numerator[i][j] / denominator[0][j];
         }
     }
-    // print_matrix(new_W, row, k);
 
     double *updated_W[row];
     for (int i = 0; i < row; i++)
@@ -183,9 +173,9 @@ void update_W_kullback(double **W, double **H, double **V, int row, int k, int c
     copy_matrix(updated_W, W, row, k);
     free_matrix(updated_W, row);
     free_matrix(new_W, row);
-    /*free_matrix(numerator, row);
+    free_matrix(numerator, row);
     free_matrix(V_by_WH, row);
-    free_matrix(WH, row);*/
+    free_matrix(WH, row);
 }
 
 void kullbackLeibler()
@@ -219,7 +209,7 @@ void kullbackLeibler()
 
     normalize(matrix, row, col);
 
-    // print_matrix(matrix, row, col);
+    
     //  Generating two matrices using user input dimension and random number generator
     //   Dimension of broken matrix
     printf("Enter dimension: ");

@@ -51,24 +51,6 @@ void copy_matrix(double **from, double **to, int row, int col)
         }
     }
 }
-/*void transpose(double input[][N], int row, int col)
-{
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < col; j++)
-        {
-            if (i == j)
-                continue;
-            else
-            {
-                double temp = input[i][j];
-                input[i][j] = input[j][i];
-                input[j][i] = temp;
-            }
-        }
-    }
-    // print_matrix(input, col, row);
-}*/
 void normalize(double **matrix, int row, int col)
 {
     double avg, sd, var = 0.0, sum = 0.0;
@@ -92,7 +74,7 @@ void normalize(double **matrix, int row, int col)
     var = var / ((row * col) - 1);
     sd = sqrt(var);
 
-    // cout << "SD: " << sd << endl;
+
 
     for (int i = 0; i < row; i++)
     {
@@ -111,7 +93,7 @@ void transpose(double **input_matrix, double **transpose_matrix, int row, int co
             transpose_matrix[j][i] = input_matrix[i][j];
         }
     }
-    // print_matrix(transpose_matrix, col, row);
+   
 }
 double rand(double minn, double maxx)
 {
@@ -170,5 +152,4 @@ void free_matrix(double **matrix, int row)
     {
         free(matrix[i]);
     }
-    free(matrix);
 }

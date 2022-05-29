@@ -170,8 +170,6 @@ void gradientDescent()
 
     printf("V= \n");
 
-    // print_matrix(V, row, col);
-
     int counter = 1;
     printf("Initial cost: ");
     // cost function

@@ -18,14 +18,13 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
         numerator_p_1[i] = (double *)malloc(col * sizeof(double));
     }
     multiply_element_wise(numerator_p_1, W, X, row, col);
-    // print_matrix(numerator_p_1, row, col);
+
     double *numerator[row];
     for (int i = 0; i < row; i++)
     {
         numerator[i] = (double *)malloc(k * sizeof(double));
     }
     multiply(numerator, numerator_p_1, transpose_V, row, col, k);
-    // print_matrix(numerator, row, k);
 
     double *UV[row];
     for (int i = 0; i < row; i++)
@@ -33,7 +32,7 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
         UV[i] = (double *)malloc(col * sizeof(double));
     }
     multiply(UV, U, V, row, k, col);
-    // print_matrix(UV, row, col);
+    
     double *denominator_p_1[row];
     for (int i = 0; i < row; i++)
     {
@@ -41,7 +40,6 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
     }
     multiply_element_wise(denominator_p_1, W, UV, row, col);
 
-    // print_matrix(denominator_p_1, row, col);
     double *denominator[row];
     for (int i = 0; i < row; i++)
     {
@@ -49,15 +47,12 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
     }
     multiply(denominator, denominator_p_1, transpose_V, row, col, k);
 
-    // print_matrix(denominator, row, k);
-
     double *second_part[row];
     for (int i = 0; i < row; i++)
     {
         second_part[i] = (double *)malloc(k * sizeof(double));
     }
     divide_element_wise(second_part, numerator, denominator, row, k);
-    // print_matrix(second_part, row, k);
 
     double *Updated_U[row];
     for (int i = 0; i < row; i++)
@@ -65,7 +60,6 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
         Updated_U[i] = (double *)malloc(k * sizeof(double));
     }
     multiply_element_wise(Updated_U, U, second_part, row, k);
-    // print_matrix(Updated_U, row, k);
     copy_matrix(Updated_U, U, row, k);
     free_matrix(Updated_U, row);
     free_matrix(denominator, row);
@@ -97,15 +91,12 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
     }
     multiply_element_wise(numerator_p_1, transpose_W, transpose_X, col, row);
 
-    // print_matrix(numerator_p_1, col, row);
     double *numerator[col];
     for (int i = 0; i < col; i++)
     {
         numerator[i] = (double *)malloc(k * sizeof(double));
     }
     multiply(numerator, numerator_p_1, U, col, row, k);
-
-    // print_matrix(numerator, col, k);
     double *transpose_V[col];
     for (int i = 0; i < col; i++)
     {
@@ -134,15 +125,12 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
     }
     multiply_element_wise(denominator_p_1, transpose_W, VUT, col, row);
 
-    // print_matrix(denominator_p_1, col, row);
     double *denominator[col];
     for (int i = 0; i < col; i++)
     {
         denominator[i] = (double *)malloc(k * sizeof(double));
     }
     multiply(denominator, denominator_p_1, U, col, row, k);
-
-    // print_matrix(denominator, col, k);
 
     double *second_part[col];
     for (int i = 0; i < col; i++)
@@ -151,14 +139,13 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
     }
     divide_element_wise(second_part, numerator, denominator, col, k);
 
-    // print_matrix(second_part, col, k);
     double *Updated_VTranspose[col];
     for (int i = 0; i < col; i++)
     {
         Updated_VTranspose[i] = (double *)malloc(k * sizeof(double));
     }
     multiply_element_wise(Updated_VTranspose, transpose_V, second_part, col, k);
-    // print_matrix(Updated_VTranspose, col, k);
+    
     double *Updated_V[k];
     for (int i = 0; i < k; i++)
     {
@@ -225,8 +212,6 @@ void regularizedMatrix()
             }
         }
     }
-    // cout << "Weighted matrix: " << endl;
-    //  print_matrix(weighted_matrix, row, col);
     cout << "Enter user defined Lambda value: (Between 0 and 1)" << endl;
     double lambda;
     cin >> lambda;
@@ -275,11 +260,7 @@ void regularizedMatrix()
             H[i][j] = Rand_number_generator(); // send to random number generator
         }
     }
-    // Update_U(matrix, weighted_matrix, W, H, row, k, col);
-    // Update_V(matrix, weighted_matrix, W, H, row, k, col);
-    // WNMF
-    //
-    //
+    
     // cost function
     int counter = 1;
     printf("Initial cost: ");
