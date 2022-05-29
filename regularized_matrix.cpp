@@ -67,6 +67,13 @@ void Update_U(double **X, double **W, double **U, double **V, int row, int k, in
     multiply_element_wise(Updated_U, U, second_part, row, k);
     // print_matrix(Updated_U, row, k);
     copy_matrix(Updated_U, U, row, k);
+    free_matrix(Updated_U, row);
+    free_matrix(denominator, row);
+    free_matrix(denominator_p_1, row);
+    free_matrix(numerator, row);
+    free_matrix(numerator_p_1, row);
+    free_matrix(UV, row);
+    free_matrix(second_part, row);
 }
 void Update_V(double **X, double **W, double **U, double **V, int row, int k, int col)
 {
@@ -159,6 +166,16 @@ void Update_V(double **X, double **W, double **U, double **V, int row, int k, in
     }
     transpose(Updated_VTranspose, Updated_V, col, k);
     copy_matrix(Updated_V, V, k, col);
+    free_matrix(Updated_V, k);
+    free_matrix(Updated_VTranspose, col);
+    free_matrix(denominator, col);
+    free_matrix(denominator_p_1, col);
+    free_matrix(numerator, col);
+    free_matrix(numerator_p_1, col);
+    free_matrix(VUT, col);
+    free_matrix(second_part, col);
+    free_matrix(transpose_V, col);
+    free_matrix(transpose_U, k);
 }
 void regularizedMatrix()
 {
@@ -171,7 +188,7 @@ void regularizedMatrix()
     scanf("%d", &choice);
     if (choice == 2)
     {
-        freopen("data.txt", "r", stdin);
+        freopen("wnmf2.txt", "r", stdin);
     }
 
     cout << "Enter number of rows and columns" << endl;
@@ -300,7 +317,7 @@ void regularizedMatrix()
     }
     printf("Factorization done!");
     freopen("result2.txt", "w", stdout);
-    printf("The beginning cost was: %lf\n", prev_cost);
+    printf("The beginning cost was: %lf\n", starting_cost);
     printf("The final cost was: %lf\n", cost);
     printf("Total number of iterations before arriving at result: %d\n", counter);
     printf("The broken down matrix:\n ");

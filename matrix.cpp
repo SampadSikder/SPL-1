@@ -123,14 +123,10 @@ double rand(double minn, double maxx)
 double exponential() // e^(-0.5*x^2)
 {
     double power, x;
-    // power = (-0.5 * pow(randfrom(-1, 1), 2)); // randfrom(-1,1) is a random number between 0 and 1
-    x = rand(-8.0, 10.0); // random number generator within -10.0 to 10.0
-    // cout << x << endl;
+    x = rand(-8.0, 10.0);       // random number generator within -10.0 to 10.0
     power = ((x - sigma) / Mu); // x-sigma/Mu is the power
-    // cout << power << endl;
     double half = -0.5;
     power = pow((half * power), 2.0); // e^-0.5*power^2
-    // cout << power << endl;
     return pow(e, power);
 }
 
@@ -170,9 +166,5 @@ double trace(double **matrix, int index)
 }
 void free_matrix(double **matrix, int row)
 {
-    for (int i = 0; i < row; i++)
-    {
-        free(matrix[i]);
-    }
-    free(matrix);
+    delete[] matrix;
 }

@@ -28,10 +28,8 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
         denominator[i] = (double *)malloc(col * sizeof(double));
 
     multiply(den_part1, transpose_W, W, k, row, k); // WT*W
-
     multiply(denominator, den_part1, H, k, k, col); //(WT*W)*H
-
-    double *updated_H[N]; // the term that is to be multiplied with H
+    double *updated_H[N];                           // the term that is to be multiplied with H
 
     for (int i = 0; i < k; i++)
         updated_H[i] = (double *)malloc(col * sizeof(double));
@@ -44,6 +42,12 @@ void update_H(double **W, double **H, double **V, int row, int k, int col)
     multiply_element_wise(ans_H, H, updated_H, k, col);
 
     copy_matrix(ans_H, H, k, col);
+    free_matrix(ans_H, k);
+    free_matrix(updated_H, k);
+    free_matrix(denominator, k);
+    free_matrix(den_part1, k);
+    free_matrix(numerator, k);
+    free_matrix(transpose_W, k);
 }
 void update_W(double **W, double **H, double **V, int row, int k, int col)
 {
@@ -67,7 +71,6 @@ void update_W(double **W, double **H, double **V, int row, int k, int col)
     multiply(HHT, H, HT, k, col, k); // HT*H
 
     double *denominator[N];
-
     for (int i = 0; i < row; i++)
         denominator[i] = (double *)malloc(k * sizeof(double));
 
@@ -88,6 +91,12 @@ void update_W(double **W, double **H, double **V, int row, int k, int col)
     multiply_element_wise(ans_W, W, updated_W, row, k);
 
     copy_matrix(ans_W, W, row, k);
+    free_matrix(ans_W, row);
+    free_matrix(updated_W, row);
+    free_matrix(denominator, row);
+    free_matrix(HHT, k);
+    free_matrix(HT, col);
+    free_matrix(numerator, row);
 }
 
 void gradientDescent()

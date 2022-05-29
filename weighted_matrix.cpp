@@ -69,6 +69,13 @@ void M_step_V_update(double **Y, double **U, double **V, double **X, double **W,
     // print_matrix(new_transpose_V, col, k);
 
     transpose(new_transpose_V, V, col, k);
+    free_matrix(transpose_Y, col);
+    free_matrix(numerator, col);
+    free_matrix(denominator_p_1, col);
+    free_matrix(denominator, col);
+    free_matrix(second_part, col);
+    free_matrix(new_transpose_V, col);
+    free_matrix(transpose_V, col);
     // print_matrix(V, k, col);
 }
 void M_step_U_update(double **Y, double **U, double **V, double **X, double **W, int row, int k, int col)
@@ -118,6 +125,12 @@ void M_step_U_update(double **Y, double **U, double **V, double **X, double **W,
     }
     multiply_element_wise(new_U, U, second_part, row, k);
     copy_matrix(new_U, U, row, k);
+    free_matrix(new_U, row);
+    free_matrix(second_part, row);
+    free_matrix(denominator, row);
+    free_matrix(denominator_p_1, row);
+    free_matrix(numerator, row);
+
     // print_matrix(U, row, k);
 }
 void E_step(double **Y, double **U, double **V, double **X, double **W, int row, int k, int col)
@@ -185,6 +198,11 @@ void E_step(double **Y, double **U, double **V, double **X, double **W, int row,
             Y[i][j] = first_part[i][j] + second_part[i][j];
         }
     }
+    free_matrix(one_matrix, row);
+    free_matrix(one_minus_weight, row);
+    free_matrix(UVT, row);
+    free_matrix(second_part, row);
+    free_matrix(first_part, row);
 }
 
 void weightedMatrix()
@@ -198,7 +216,7 @@ void weightedMatrix()
     scanf("%d", &choice);
     if (choice == 2)
     {
-        freopen("data.txt", "r", stdin);
+        freopen("wnmf1.txt", "r", stdin);
     }
 
     cout << "Enter number of rows and columns" << endl;
